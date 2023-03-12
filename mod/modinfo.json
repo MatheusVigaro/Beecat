@@ -1,0 +1,12 @@
+{
+	"id": "beeworld",
+	"name": "Beecat",
+	"version": "1.0.5",
+	"hide_version": false,
+	"authors": "Vigaro",
+	"description": "Beecat",
+	"requirements": [ "slime-cubed.slugbase" ],
+	"requirements_names": [ "SlugBase" ],
+	"checksum_override_version": false,
+	"tags": ["Game Mechanics", "Campaigns"]
+}

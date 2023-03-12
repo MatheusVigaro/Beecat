@@ -1,0 +1,51 @@
+[h1]Spread your wings over this barren world![/h1]
+
+[b]Disclaimer! This is a very early prototype, some things are susceptible to change or unfinished. This character's campaign is in development and hasn't been implemented yet, the world and creature spawns are the same as Hunter's for now.[/b]
+
+An agile creature, Beecat is able to move quickly through the world, and has the ability to fly through short distances (or until they get tired), this enhanced agility and mobility comes at a cost, though, the Beecat uses some of the nutrients they consume to fuel their powerful muscles and wings, only allowing half of the nutrition acquired from the food they consume to be stored for hibernation. They make up for that, however, with the ability to store nutrients in their long and thick tail, allowing for a large amount of food to be stored for the next cycle.
+
+[hr][/hr]
+[h1]Custom features![/h1]
+[list]
+    [*][b]Wings![/b]: Press and hold [b]jump[/b] while in midair to spread your wings and glide through short distances.
+
+    [*][b]Aerial Bombardment[/b]: Spears, rocks, bombs, etc and be thrown up and down at your foes while flying.
+
+    [*][b]Fast Metabolism[/b]: Move through the world at an increased speed, however you only get half of the nutrition from the food you eat.
+
+    [*][b]Tail Reserves[/b]: Store nutrients in your tail, allowing for a large amount of food to be saved for the next cycle.
+
+    [*][b]Tail Chonk[/b]: A growing tail, which gets larger as you store more food, when at 8 or more food pips, you can hurt enemies by jumping onto them with your fat tail.
+
+    [*][b]Custom Graphics[/b]: Show your swag to the world with your beautiful wings and stripped tail, with [b]fully customizable colors[/b]!.
+[/list] 
+
+[hr][/hr]
+[h1]Planned features:[/h1]
+[list]
+    [*][b]Custom campaign[/b]: A custom campaign will be added for this slugcat.
+
+    [*][b]New region[/b]: There will be a new region to explore, which will be part of their campaign.
+
+    [*][b]Melee weapon/combat[/b]: A new weapon and/or combat mechanic for combat at close range.
+
+    [*][b]New creatures[/b]: New thematic creatures matching the new region's style.
+
+    [*][b]A harsher world[/b]: More aggressive enemy spawns all over the world, a fitting challenge for this powerful creature.
+
+    [*][b]Bee Pups[/b]: New Bee Pups (Bups) will be found all over the world (Requires DLC).
+
+    [*][b]Custom Art[/b]: New art for the slugcat selection screen, cutscenes and dreams.
+
+    [*][b]Graphical Improvements[/b]: The graphics for the Beecat are a placeholder for now, I'll replace them with better ones once I have the time.
+[/list] 
+
+[hr][/hr]
+
+GitHub link for GoG users:
+https://github.com/MatheusVigaro/Beecat/releases/
+
+Huge thanks to Elliot (UraniumCarrot126#4166) and mae (Slurpps!#6066) for the amazing thumbnail art, and to slugcat#1008 for the cutest hibernation screen art!
+
+
+P.S.: It would be nice to have short gameplay videos for the workshop gallery, if anyone is willing to record some you can send the youtube link and I'll put it there, you can also ping me (@Vigaro) on the Rain World Discord server.

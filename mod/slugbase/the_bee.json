@@ -1,0 +1,72 @@
+{
+	"id": "bee",
+	"name": "Beecat",
+	"description": "A regular bee?",
+	"features": {
+		"color": "ffcf0d",
+		"custom_colors": [
+			{
+				"name": "Body",
+				"story": "ffcf0d",
+				"arena": [ "F0F0FF", "FFFF73", "FF7373", "2e144f" ]
+			},
+			{
+				"name": "Eyes",
+				"story": "010101",
+				"arena": [ "010101", "010101", "010101", "BBB6BC" ]
+			},
+			{
+				"name": "Wings",
+				"story": "ffffff",
+				"arena": [ "ffffff", "ffffff", "ffffff", "ffffff" ]
+			},
+			{
+				"name": "Tail",
+				"story": "ffcf0d",
+				"arena": [ "F0F0FF", "FFFF73", "FF7373", "2e144f" ]
+			},
+			{
+				"name": "Tail Stripes",
+				"story": "010101",
+				"arena": [ "010101", "010101", "010101", "010101" ]
+			},
+			{
+				"name": "Antennae",
+				"story": "010101",
+				"arena": [ "010101", "010101", "010101", "010101" ]
+			},
+			{
+				"name": "Neck Fluff",
+				"story": "161c24",
+				"arena": [ "161c24", "161c24", "161c24", "b6bfcb" ]
+			}
+		],
+
+		"weight": 0.95,
+		"tunnel_speed": 1.4,
+		"climb_speed": 1.6,
+		"walk_speed": 1.4,
+		"crouch_stealth": 0.6,
+		"throw_skill": 2,
+		"diet": {
+			"corpses": 0.5,
+			"meat": 0.5,
+			"plants": 0.5
+		},
+		"karma": 2,
+		"karma_cap": 4,
+		"food_min": 5,
+		"food_max": 11,
+		"world_state": [ "Spear", "Red" ],
+		"start_room": [ "SI_S06", "SI_S05" ],
+
+		"select_menu_scene": "slugcat_bee",
+		"select_menu_scene_ascended": "ghost_bee",
+		"sleep_scene": "sleep_bee",
+
+		"beeworld/wingstamina": 200,
+		"beeworld/wingstaminarecovery": 1,
+		"beeworld/wingsspeed": 2,
+		"beeworld/beecompanion": true
+	}
+}

@@ -1,0 +1,84 @@
+{"frames": {
+
+"AntennaeA0.png":
+{
+	"frame": {"x":2,"y":2,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA1.png":
+{
+	"frame": {"x":44,"y":2,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA2.png":
+{
+	"frame": {"x":86,"y":2,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA3.png":
+{
+	"frame": {"x":2,"y":48,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA4.png":
+{
+	"frame": {"x":44,"y":48,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA5.png":
+{
+	"frame": {"x":86,"y":48,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA6.png":
+{
+	"frame": {"x":2,"y":94,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA7.png":
+{
+	"frame": {"x":44,"y":94,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+},
+"AntennaeA8.png":
+{
+	"frame": {"x":86,"y":94,"w":40,"h":44},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":40,"h":44},
+	"sourceSize": {"w":40,"h":44}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "antennae.png",
+	"format": "RGBA8888",
+	"size": {"w":128,"h":140},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:d78cd5e4bb94163d439d9646af8ca14f:099555cbda2536b6593c7369bdb5ea4e:41f34c6dbaa2cfda71503b4ed48fcbb2$"
+}
+}

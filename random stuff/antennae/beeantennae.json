@@ -1,0 +1,156 @@
+{"frames": {
+
+"BeeAntennaeA0.png":
+{
+	"frame": {"x":2,"y":2,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA1.png":
+{
+	"frame": {"x":52,"y":2,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA2.png":
+{
+	"frame": {"x":2,"y":55,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA3.png":
+{
+	"frame": {"x":52,"y":55,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA4.png":
+{
+	"frame": {"x":2,"y":108,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA5.png":
+{
+	"frame": {"x":52,"y":108,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA6.png":
+{
+	"frame": {"x":2,"y":161,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA7.png":
+{
+	"frame": {"x":52,"y":161,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA8.png":
+{
+	"frame": {"x":2,"y":214,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA9.png":
+{
+	"frame": {"x":52,"y":214,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA10.png":
+{
+	"frame": {"x":2,"y":267,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA11.png":
+{
+	"frame": {"x":52,"y":267,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA12.png":
+{
+	"frame": {"x":2,"y":320,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA13.png":
+{
+	"frame": {"x":52,"y":320,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA14.png":
+{
+	"frame": {"x":2,"y":373,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA15.png":
+{
+	"frame": {"x":52,"y":373,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA16.png":
+{
+	"frame": {"x":2,"y":426,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+},
+"BeeAntennaeA17.png":
+{
+	"frame": {"x":52,"y":426,"w":48,"h":51},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":51},
+	"sourceSize": {"w":48,"h":51}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "beeantennae.png",
+	"format": "RGBA8888",
+	"size": {"w":102,"h":479},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:d37f0aa6445ed5d6a9c82a8ef3bdb17c:4c2f728909d82dcaaf5548c7df52e7a6:c9aa35b353185949107af36df8521a85$"
+}
+}
