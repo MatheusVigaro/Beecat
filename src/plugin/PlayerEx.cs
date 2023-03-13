@@ -16,7 +16,7 @@ namespace BeeWorld
         public readonly bool IsBee;
 
         public readonly SlugcatStats.Name Name;
-        public readonly SlugBaseCharacter Character;
+        public SlugBaseCharacter Character;
 
         public bool CanFly => WingStaminaMax > 0 && WingSpeed > 0;
         public float MinimumFlightStamina => WingStaminaMax * 0.1f;
@@ -55,6 +55,8 @@ namespace BeeWorld
         public Color AntennaeColor;
         public Color FluffColor;
 
+        public FAtlas TailAtlas;
+
         public bool UnlockedExtraStamina = true;
         public bool UnlockedVerticalFlight = true;
 
@@ -81,6 +83,46 @@ namespace BeeWorld
                 Name = extEnum as SlugcatStats.Name;
             }
 
+            SetupColors(player);
+            LoadTailAtlas();
+
+            lastTail = -1;
+
+            flyingBuzzSound = new ChunkDynamicSoundLoop(player.bodyChunks[0]);
+            flyingBuzzSound.sound = BeeEnums.BeeBuzz;
+            flyingBuzzSound.Pitch = 1f;
+            flyingBuzzSound.Volume = 1f;
+
+            wingStamina = WingStaminaMax;
+            timeSinceLastFlight = 200;
+        }
+
+        ~PlayerEx() {
+            try
+            {
+                TailAtlas.Unload();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+        private void LoadTailAtlas()
+        {
+            var tailTexture = new Texture2D(Plugin.TailTexture.width, Plugin.TailTexture.height, TextureFormat.ARGB32, false);
+            Graphics.CopyTexture(Plugin.TailTexture, tailTexture);
+
+            MapTextureColor(tailTexture, Color.white, TailColor);
+            MapTextureColor(tailTexture, Color.red, StripeColor);
+
+            if (playerRef.TryGetTarget(out var player)) {
+                TailAtlas = Futile.atlasManager.LoadAtlasFromTexture("beecattailtexture_" + player.playerState.playerNumber, tailTexture, false);
+            }
+        }
+
+        private void SetupColors(Player player)
+        {
             //-- Loading default colors
             if (SlugBaseCharacter.TryGet(Name, out Character))
             {
@@ -182,16 +224,6 @@ namespace BeeWorld
                     FluffColor = PlayerGraphics.CustomColorSafety(6);
                 }
             }
-
-            lastTail = -1;
-
-            flyingBuzzSound = new ChunkDynamicSoundLoop(player.bodyChunks[0]);
-            flyingBuzzSound.sound = BeeEnums.BeeBuzz;
-            flyingBuzzSound.Pitch = 1f;
-            flyingBuzzSound.Volume = 1f;
-
-            wingStamina = WingStaminaMax;
-            timeSinceLastFlight = 200;
         }
 
         public void StopFlight()
@@ -293,6 +325,23 @@ namespace BeeWorld
 
                 self.bodyParts = bp.ToArray();
             }
+        }
+
+        public static void MapTextureColor(Texture2D texture, Color from, Color to)
+        {
+            for (var x = 0; x < texture.width; x++)
+            {
+                for (var y = 0; y < texture.height; y++)
+                {
+                    if (texture.GetPixel(x, y) == from)
+                    {
+                        texture.SetPixel(x, y, to);
+                    }
+                }
+            }
+            
+
+            texture.Apply(false);
         }
     }
 }

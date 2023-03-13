@@ -19,6 +19,7 @@ using static UnityEngine.UIElements.UxmlAttributeDescription;
 using SlugBase.DataTypes;
 using BeeWorld.Hooks;
 using Fisobs.Core;
+using System.IO;
 
 [module: UnverifiableCode]
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -44,6 +45,8 @@ namespace BeeWorld
         public static readonly PlayerFeature<PlayerColor> TailColor = PlayerCustomColor("Tail");
         public static readonly PlayerFeature<PlayerColor> StripeColor = PlayerCustomColor("Tail Stripes");
 
+        public static Texture2D TailTexture;
+
         private bool IsInit;
 
         private void RainWorld_OnOnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld self)
@@ -58,6 +61,16 @@ namespace BeeWorld
                 Futile.atlasManager.LoadAtlas("atlases/beeantennaehead");
                 Futile.atlasManager.LoadAtlas("atlases/floof");
                 Futile.atlasManager.LoadAtlas("atlases/floof2");
+                Futile.atlasManager.LoadAtlas("atlases/beecathands");
+                Futile.atlasManager.LoadAtlas("atlases/beecattail");
+
+                TailTexture = new Texture2D(150, 75, TextureFormat.ARGB32, false);
+                var tailTextureFile = AssetManager.ResolveFilePath("textures/beecattail.png");
+                if (File.Exists(tailTextureFile))
+                {
+                    var rawData = File.ReadAllBytes(tailTextureFile);
+                    TailTexture.LoadImage(rawData);
+                }
 
                 BeeEnums.RegisterValues();
 

@@ -130,6 +130,30 @@ namespace BeeWorld.Hooks
             sLeaser.sprites[player.antennaeSprite] = new FSprite("BeeAntennaeHeadA0", true);
             sLeaser.sprites[player.floofSprite] = new FSprite("floof2", true);
 
+            if (sLeaser.sprites[2] is TriangleMesh tail && player.TailAtlas.elements != null && player.TailAtlas.elements.Count > 0)
+            {
+                //tail.element = Futile.atlasManager.GetElementWithName("beecattail");
+                tail.element = player.TailAtlas.elements[0];
+                for (int i = tail.verticeColors.Length - 1; i >= 0; i--)
+                {
+                    float perc = i / 2 / (float)(tail.verticeColors.Length / 2);
+                    //tail.verticeColors[i] = Color.Lerp(fromColor, toColor, perc);
+                    Vector2 uv;
+                    if (i % 2 == 0)
+                        uv = new Vector2(perc, 0f);
+                    else if (i < tail.verticeColors.Length - 1)
+                        uv = new Vector2(perc, 1f);
+                    else
+                        uv = new Vector2(1f, 0f);
+
+                    // Map UV values to the element
+                    uv.x = Mathf.Lerp(tail.element.uvBottomLeft.x, tail.element.uvTopRight.x, uv.x);
+                    uv.y = Mathf.Lerp(tail.element.uvBottomLeft.y, tail.element.uvTopRight.y, uv.y);
+
+                    tail.UVvertices[i] = uv;
+                }
+            }
+
             self.AddToContainer(sLeaser, rCam, null);
         }
 
@@ -272,8 +296,8 @@ namespace BeeWorld.Hooks
             var antennaeColor = player.AntennaeColor.Equals(Color.clear) ? sLeaser.sprites[9].color : player.AntennaeColor;
             var fluffColor = player.FluffColor.Equals(Color.clear) ? Color.Lerp(sLeaser.sprites[9].color, Color.white, 0.2f) : player.FluffColor;
 
-            //-- Tail stuff
-
+            //-- Tail stuff (Replaced with a UV map, see InitiateSprites
+            /*
             if (sLeaser.sprites[2] is TriangleMesh tailMesh)
             {
                 var black = stripeColor;
@@ -298,7 +322,7 @@ namespace BeeWorld.Hooks
                 {
                     tailMesh.verticeColors[i] = useBlack ? black : yellow;
                 }
-            }
+            }*/
 
 
             //-- Antennae stuff
@@ -359,6 +383,16 @@ namespace BeeWorld.Hooks
             }
 
             //player.lastFloofPos = new Vector2(sLeaser.sprites[player.floofSprite].x, sLeaser.sprites[player.floofSprite].y);
+
+            //-- Hand stuff
+
+            for (var i = 5; i <= 8; i++)
+            {
+                if (!sLeaser.sprites[i].element.name.StartsWith("Beecat"))
+                {
+                    sLeaser.sprites[i].element = Futile.atlasManager.GetElementWithName("Beecat" + sLeaser.sprites[i].element.name);
+                }
+            }
 
             //-- Wings stuff
 
