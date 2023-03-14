@@ -57,8 +57,8 @@ namespace BeeWorld
 
         public FAtlas TailAtlas;
 
-        public bool UnlockedExtraStamina = true;
-        public bool UnlockedVerticalFlight = true;
+        public bool UnlockedExtraStamina = false;
+        public bool UnlockedVerticalFlight = false;
 
         public int WingStaminaMax => UnlockedExtraStamina ? (int)(WingStaminaMaxBase * 1.6f) : WingStaminaMaxBase;
         public float WingStaminaRecovery => UnlockedExtraStamina ? WingStaminaRecoveryBase * 1.2f : WingStaminaRecoveryBase;

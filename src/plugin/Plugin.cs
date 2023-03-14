@@ -41,10 +41,6 @@ namespace BeeWorld
         public static readonly PlayerFeature<float> WingSpeed = PlayerFloat("beeworld/wingsspeed");
         public static readonly PlayerFeature<bool> BeeCompanion = PlayerBool("beeworld/beecompanion");
 
-        public static readonly PlayerFeature<PlayerColor> WingColor = PlayerCustomColor("Wings");
-        public static readonly PlayerFeature<PlayerColor> TailColor = PlayerCustomColor("Tail");
-        public static readonly PlayerFeature<PlayerColor> StripeColor = PlayerCustomColor("Tail Stripes");
-
         public static Texture2D TailTexture;
 
         private bool IsInit;
@@ -62,7 +58,6 @@ namespace BeeWorld
                 Futile.atlasManager.LoadAtlas("atlases/floof");
                 Futile.atlasManager.LoadAtlas("atlases/floof2");
                 Futile.atlasManager.LoadAtlas("atlases/beecathands");
-                Futile.atlasManager.LoadAtlas("atlases/beecattail");
 
                 TailTexture = new Texture2D(150, 75, TextureFormat.ARGB32, false);
                 var tailTextureFile = AssetManager.ResolveFilePath("textures/beecattail.png");
@@ -76,11 +71,11 @@ namespace BeeWorld
 
                 PlayerHooks.Init();
                 PlayerGraphicsHooks.Init();
-                RoomHooks.Init();
-                SaveDataHooks.Init();
-                WorldHooks.Init();
+                //RoomHooks.Init();
+                //SaveDataHooks.Init();
+                //WorldHooks.Init();
 
-                Content.Register(new FlowerFisob());
+                //Content.Register(new FlowerFisob());
 
                 Debug.Log($"Plugin {PluginInfo.PLUGIN_GUID} is loaded!");
             }
