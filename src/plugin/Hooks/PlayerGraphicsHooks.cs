@@ -296,6 +296,8 @@ namespace BeeWorld.Hooks
             var antennaeColor = player.AntennaeColor.Equals(Color.clear) ? sLeaser.sprites[9].color : player.AntennaeColor;
             var fluffColor = player.FluffColor.Equals(Color.clear) ? Color.Lerp(sLeaser.sprites[9].color, Color.white, 0.2f) : player.FluffColor;
 
+            sLeaser.sprites[2].color = Color.white;
+
             //-- Tail stuff (Replaced with a UV map, see InitiateSprites
             /*
             if (sLeaser.sprites[2] is TriangleMesh tailMesh)

@@ -4,6 +4,7 @@ using SlugBase;
 using System.Linq;
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BeeWorld
 {
@@ -117,7 +118,7 @@ namespace BeeWorld
             MapTextureColor(tailTexture, Color.red, StripeColor);
 
             if (playerRef.TryGetTarget(out var player)) {
-                TailAtlas = Futile.atlasManager.LoadAtlasFromTexture("beecattailtexture_" + player.playerState.playerNumber, tailTexture, false);
+                TailAtlas = Futile.atlasManager.LoadAtlasFromTexture("beecattailtexture_" + player.playerState.playerNumber + Random.value, tailTexture, false);
             }
         }
 
@@ -128,25 +129,29 @@ namespace BeeWorld
             {
                 if (Character.Features.TryGet(PlayerFeatures.CustomColors, out var customColors))
                 {
+                    //-- Preventing arena colors from being assigned to the main player outside of arena
+
+                    var playerNumber = !player.room.game.IsArenaSession && player.playerState.playerNumber == 0 ? -1 : player.playerState.playerNumber;
+
                     if (customColors.Length > 2)
                     {
-                        WingColor = customColors[2].GetColor(player.playerState.playerNumber);
+                        WingColor = customColors[2].GetColor(playerNumber);
                     }
                     if (customColors.Length > 3)
                     {
-                        TailColor = customColors[3].GetColor(player.playerState.playerNumber);
+                        TailColor = customColors[3].GetColor(playerNumber);
                     }
                     if (customColors.Length > 4)
                     {
-                        StripeColor = customColors[4].GetColor(player.playerState.playerNumber);
+                        StripeColor = customColors[4].GetColor(playerNumber);
                     }
                     if (customColors.Length > 5)
                     {
-                        AntennaeColor = customColors[5].GetColor(player.playerState.playerNumber);
+                        AntennaeColor = customColors[5].GetColor(playerNumber);
                     }
                     if (customColors.Length > 6)
                     {
-                        FluffColor = customColors[6].GetColor(player.playerState.playerNumber);
+                        FluffColor = customColors[6].GetColor(playerNumber);
                     }
 
                     if (WingColor.Equals(Color.clear))
@@ -157,7 +162,7 @@ namespace BeeWorld
                     {
                         if (customColors.Length > 0)
                         {
-                            TailColor = customColors[0].GetColor(player.playerState.playerNumber);
+                            TailColor = customColors[0].GetColor(playerNumber);
                         }
                         else
                         {
@@ -168,7 +173,7 @@ namespace BeeWorld
                     {
                         if (customColors.Length > 1)
                         {
-                            StripeColor = customColors[1].GetColor(player.playerState.playerNumber);
+                            StripeColor = customColors[1].GetColor(playerNumber);
                         }
                         else
                         {
@@ -179,7 +184,7 @@ namespace BeeWorld
                     {
                         if (customColors.Length > 2)
                         {
-                            AntennaeColor = customColors[1].GetColor(player.playerState.playerNumber);
+                            AntennaeColor = customColors[1].GetColor(playerNumber);
                         }
                         else
                         {
@@ -190,7 +195,7 @@ namespace BeeWorld
                     {
                         if (customColors.Length > 2)
                         {
-                            FluffColor = customColors[1].GetColor(player.playerState.playerNumber);
+                            FluffColor = customColors[1].GetColor(playerNumber);
                         }
                         else
                         {
