@@ -1,2 +1,2 @@
 cd /D "%~dp0"
-mklink /D game "F:\Steam\steamapps\common\Rain World"
+mklink /D game "G:\Steam\steamapps\common\Rain World"

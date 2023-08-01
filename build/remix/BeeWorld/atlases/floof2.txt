@@ -1,0 +1,20 @@
+{"frames": {
+
+"floof2.png":
+{
+	"frame": {"x":2,"y":2,"w":32,"h":18},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":18},
+	"sourceSize": {"w":32,"h":18}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "floof2.png",
+	"format": "RGBA8888",
+	"size": {"w":36,"h":22},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:48f1930e10ea01ec934a70b458cbdf13:a71782d85e7bc91a63663fc8fee5be84:333bdf306356b7faa952ea1583e542c1$"
+}
+}
