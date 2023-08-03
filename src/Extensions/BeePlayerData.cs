@@ -1,30 +1,35 @@
-﻿using System.Linq;
-using System;
+﻿using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using RWCustom;
 using SlugBase.DataTypes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace BeeWorld;
+namespace BeeWorld.Extensions;
 
 public class BeePlayerData
 {
-    public const int WingStaminaMaxBase = 200;
-    public const float WingStaminaRecoveryBase = 1;
-    public const float WingSpeedBase = 2;
+    private static float WingStaminaMaxBase => BeeOptions.MaximumStamina.Value;
+    private static float WingStaminaRecoveryBase => BeeOptions.StaminaRecoverySpeed.Value;
+    private static float WingSpeedBase => BeeOptions.FlightSpeed.Value;
+
+    private const int StingerAttackTime = 10;
+    private const int StingerAttackCooldown = 60;
+    private const float StingerAttackRange = 40;
+
     public readonly bool IsBee;
 
     public bool CanFly => WingStaminaMax > 0 && WingSpeed > 0;
     public float MinimumFlightStamina => WingStaminaMax * 0.1f;
     public double LowWingStamina => MinimumFlightStamina * 3;
 
-    public int WingStaminaMax => UnlockedExtraStamina ? (int)(WingStaminaMaxBase * 1.6f) : WingStaminaMaxBase;
+    public int WingStaminaMax => (int)(UnlockedExtraStamina ? (int)(WingStaminaMaxBase * 1.6f) : WingStaminaMaxBase);
     public float WingStaminaRecovery => UnlockedExtraStamina ? WingStaminaRecoveryBase * 1.2f : WingStaminaRecoveryBase;
     public float WingSpeed => UnlockedFasterWings ? WingSpeedBase * 1.3f : WingSpeedBase;
 
     public bool UnlockedExtraStamina = false;
-    public bool UnlockedVerticalFlight = false;
+    public bool UnlockedVerticalFlight = BeeOptions.VerticalFight.Value;
     public bool UnlockedFasterWings = false;
 
     public int preventGrabs;
@@ -35,12 +40,24 @@ public class BeePlayerData
     public int timeSinceLastFlight;
     public int preventFlight;
     public int lastTail;
+    public bool stingerUsed;
 
     public int initialWingSprite;
     public int antennaeSprite;
     public int floofSprite;
     public int staminaSprite;
+    public int stingerSprite;
 
+    public int stingerAttackCooldown;
+    public int stingerAttackCounter;
+    public Vector2 stingerRelativeOriginPos;
+    public Vector2 stingerRelativeTargetPos;
+    public BodyChunk stingerTargetChunk;
+
+    public Vector2 CurrentStingerAttackPos => Vector2.Lerp(StingerOriginPos, StingerTargetPos, (StingerAttackTime - stingerAttackCounter) / (float)StingerAttackTime);
+    public Vector2 StingerOriginPos => playerRef.Get().bodyChunks[0].pos + stingerRelativeOriginPos;
+    public Vector2 StingerTargetPos => stingerTargetChunk != null ? stingerTargetChunk.pos + ((stingerTargetChunk.pos - playerRef.Get().bodyChunks[1].pos).normalized * 10) : playerRef.Get().bodyChunks[0].pos + stingerRelativeTargetPos;
+    
     public Vector2 staminaLastPos;
     public Vector2 staminaPos;
     public float staminaLastFill;
@@ -247,6 +264,20 @@ public class BeePlayerData
             self.bodyParts = bp.ToArray();
         }
     }
+
+    public void StingerAttack(Vector2 relativeVisualTarget, Vector2 relativeActualTarget)
+    {
+        var player = playerRef.Get();
+
+        var absTarget = player.bodyChunks[0].pos + relativeVisualTarget;
+        player.room.PlaySound(SoundID.Vulture_Peck, absTarget, Random.Range(0.7f, 0.9f), Random.Range(0.9f, 1.1f));
+        
+        stingerRelativeOriginPos = player.PlayerGraphics().tail.LastOrDefault()!.pos - player.bodyChunks[0].pos;
+        stingerRelativeTargetPos = relativeVisualTarget;
+        stingerTargetChunk = Utils.ClosestAttackableChunk(player.room, player.bodyChunks[1].pos + relativeActualTarget, StingerAttackRange);
+        stingerAttackCounter = StingerAttackTime;
+        stingerAttackCooldown = StingerAttackCooldown + StingerAttackTime;
+    }
 }
 
 public static class PlayerExtension
@@ -258,6 +289,16 @@ public static class PlayerExtension
     public static Color? GetColor(this PlayerGraphics pg, PlayerColor color) => color.GetColor(pg);
 
     public static Color? GetColor(this Player player, PlayerColor color) => (player.graphicsModule as PlayerGraphics)?.GetColor(color);
+
+    public static Player Get(this WeakReference<Player> weakRef)
+    {
+        weakRef.TryGetTarget(out var result);
+        return result;
+    }
+
+    public static PlayerGraphics PlayerGraphics(this Player player) => (PlayerGraphics)player.graphicsModule;
+
+    public static TailSegment[] Tail(this Player player) => player.PlayerGraphics().tail;
 
     public static bool IsBee(this Player player) => player.Bee().IsBee;
 

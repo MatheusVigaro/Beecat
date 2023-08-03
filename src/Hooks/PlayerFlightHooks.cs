@@ -1,72 +1,16 @@
-﻿using Mono.Cecil.Cil;
+﻿using System.Linq;
+using BeeWorld.Extensions;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using UnityEngine;
 
 namespace BeeWorld.Hooks;
 
-public static class PlayerHooks
+public static class PlayerFlightHooks
 {
     public static void Apply()
     {
         On.Player.UpdateMSC += Player_UpdateMSC;
-        On.Player.CanBeSwallowed += Player_CanBeSwallowed;
-        On.SlugcatStats.SlugcatCanMaul += SlugcatStats_SlugcatCanMaul;
-        On.Player.Grabability += Player_Grabability;
-
-        IL.Player.ThrowObject += Player_ThrowObject;
-        IL.Player.SlugSlamConditions += Player_SlugSlamConditions;
-    }
-
-    private static Player.ObjectGrabability Player_Grabability(On.Player.orig_Grabability orig, Player self, PhysicalObject obj)
-    {
-        if (self.IsBee(out var bee) && bee.preventGrabs > 0)
-        {
-            return Player.ObjectGrabability.CantGrab;
-        }
-
-        return orig(self, obj);
-    }
-
-    #region ILHooks
-
-    private static void Player_ThrowObject(ILContext il)
-    {
-        var cursor = new ILCursor(il);
-
-        cursor.GotoNext(MoveType.Before, i => i.MatchLdsfld<Player.AnimationIndex>("Flip"));
-        cursor.GotoNext(MoveType.Before, i => i.MatchLdloc(1));
-
-        cursor.MoveAfterLabels();
-
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate((Player player) => player.IsBee(out var bee) && bee.isFlying);
-        cursor.Emit(OpCodes.Or);
-    }
-    
-    private static void Player_SlugSlamConditions(ILContext il)
-    {
-        var cursor = new ILCursor(il);
-        cursor.GotoNext(MoveType.Before, i => i.MatchBrfalse(out _));
-
-        cursor.MoveAfterLabels();
-
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate((Player self) => !(self.IsBee() && self.FoodInStomach >= 8));
-        cursor.Emit(OpCodes.And);
-    }
-
-    #endregion
-
-    #region Player
-
-    private static bool Player_CanBeSwallowed(On.Player.orig_CanBeSwallowed orig, Player self, PhysicalObject testObj)
-    {
-        return orig(self, testObj) || (testObj is Flower && self.IsBee());
-    }
-
-    private static bool SlugcatStats_SlugcatCanMaul(On.SlugcatStats.orig_SlugcatCanMaul orig, SlugcatStats.Name slugcatNum)
-    {
-        return slugcatNum.value.ToLower() == "bee" || orig(slugcatNum);
     }
 
     private static void Player_UpdateMSC(On.Player.orig_UpdateMSC orig, Player self)
@@ -83,6 +27,8 @@ public static class PlayerHooks
         const float flightGravity = 0.12f;
         const float flightAirFriction = 0.7f;
         const float flightKickinDuration = 6f;
+        
+        self.room.game.session.saveState
 
         if (bee.CanFly)
         {
@@ -135,7 +81,7 @@ public static class PlayerHooks
                 {
                     if (self.input[0].y > 0)
                     {
-                        self.bodyChunks[0].vel.y += bee.WingSpeed * 0.5f;
+                        self.bodyChunks[0].vel.y += bee.WingSpeed * 0.75f;
                         self.bodyChunks[1].vel.y -= 0.3f;
                     }
                     else if (self.input[0].y < 0)
@@ -179,14 +125,5 @@ public static class PlayerHooks
                 self.gravity = normalGravity;
             }
         }
-
-        if (bee.preventGrabs > 0)
-        {
-            bee.preventGrabs--;
-        }
-
-        bee.flyingBuzzSound.Update();
-        bee.RecreateTailIfNeeded(self.graphicsModule as PlayerGraphics);
     }
-    #endregion
 }

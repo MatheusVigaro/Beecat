@@ -1,5 +1,7 @@
 ﻿using RWCustom;
 using System;
+using System.Linq;
+using BeeWorld.Extensions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Vector2 = UnityEngine.Vector2;
@@ -17,8 +19,6 @@ public static class PlayerGraphicsHooks
         On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
         On.PlayerGraphics.AddToContainer += PlayerGraphics_AddToContainer;
     }
-
-    #region PlayerGraphics
 
     private static readonly Color FullStaminaColor = new Color(1, 0.8f, 0);
     private static readonly Color LowStaminaColor = new Color(0.9f, 0.05f, 0);
@@ -51,6 +51,11 @@ public static class PlayerGraphicsHooks
 
             //-- Tail go behind hips
             sLeaser.sprites[2].MoveBehindOtherNode(sLeaser.sprites[1]);
+            
+            //-- Stinger go behind tail
+            sLeaser.sprites[bee.stingerSprite].RemoveFromContainer();
+            midgroundContainer.AddChild(sLeaser.sprites[bee.stingerSprite]);
+            sLeaser.sprites[bee.stingerSprite].MoveBehindOtherNode(sLeaser.sprites[2]);
 
             sLeaser.sprites[bee.antennaeSprite].RemoveFromContainer();
             midgroundContainer.AddChild(sLeaser.sprites[bee.antennaeSprite]);
@@ -71,6 +76,8 @@ public static class PlayerGraphicsHooks
         {
             return;
         }
+
+        self.bodyPearl = new PlayerGraphics.CosmeticPearl(self, 0);
 
         bee.RecreateTailIfNeeded(self);
 
@@ -94,8 +101,9 @@ public static class PlayerGraphicsHooks
         bee.antennaeSprite = bee.initialWingSprite + 4;
         bee.floofSprite = bee.antennaeSprite + 1;
         bee.staminaSprite = bee.floofSprite + 1;
+        bee.stingerSprite = bee.staminaSprite + 1;
 
-        Array.Resize(ref sLeaser.sprites, sLeaser.sprites.Length + 7);
+        Array.Resize(ref sLeaser.sprites, sLeaser.sprites.Length + 8);
 
         for (var i = 0; i < 2; i++)
         {
@@ -116,6 +124,10 @@ public static class PlayerGraphicsHooks
             color = FullStaminaColor,
             alpha = 0,
             shader = Custom.rainWorld.Shaders["BeecatStaminaBar"]
+        };
+        sLeaser.sprites[bee.stingerSprite] = new FSprite("atlases/beecatstinger")
+        {
+            scale = 0.4f
         };
 
         if (sLeaser.sprites[2] is TriangleMesh tail && bee.TailAtlas.elements != null && bee.TailAtlas.elements.Count > 0)
@@ -312,6 +324,7 @@ public static class PlayerGraphicsHooks
         var wingColor = bee.WingColor;
         var antennaeColor = bee.AntennaeColor;
         var fluffColor = bee.FluffColor;
+        var stripeColor = bee.StripeColor;
 
         sLeaser.sprites[2].color = Color.white;
 
@@ -382,6 +395,21 @@ public static class PlayerGraphicsHooks
             }
         }
         
+        //-- Stinger stuff
+        var tailVertices = ((TriangleMesh)sLeaser.sprites[2]).vertices;
+        var tailTip = new[]
+        {
+            tailVertices[tailVertices.Length - 3],
+            tailVertices[tailVertices.Length - 2],
+            tailVertices[tailVertices.Length - 1],
+        };
+        var stingerAngle = (((tailTip[0] + tailTip[1]) / 2) - tailTip[2]).normalized;
+        var stingerPos = ((tailTip[0] + tailTip[1] + tailTip[2]) / 3) + stingerAngle * -3;
+        sLeaser.sprites[bee.stingerSprite].SetPosition(stingerPos);
+        sLeaser.sprites[bee.stingerSprite].rotation = Custom.VecToDeg(stingerAngle);
+        sLeaser.sprites[bee.stingerSprite].color = stripeColor;
+        sLeaser.sprites[bee.stingerSprite].isVisible = !bee.stingerUsed;
+
         //-- Stamina HUD stuff
         sLeaser.sprites[bee.staminaSprite].SetPosition(Vector2.Lerp(bee.staminaLastPos, bee.staminaPos, timeStacker) - camPos);
         sLeaser.sprites[bee.staminaSprite].alpha = Mathf.Lerp(bee.staminaLastFade, bee.staminaFade, timeStacker);
@@ -462,6 +490,4 @@ public static class PlayerGraphicsHooks
             }
         }
     }
-
-    #endregion
 }

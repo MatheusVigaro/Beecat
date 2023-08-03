@@ -16,10 +16,13 @@ using RWCustom;
 
 namespace BeeWorld;
 
-[BepInPlugin(MOD_ID, "Beecat", "1.0.0")]
+[BepInPlugin(MOD_ID, MOD_NAME, VERSION)]
 public class Plugin : BaseUnityPlugin
 {
     public const string MOD_ID = "beeworld";
+    public const string MOD_NAME = "Beecat";
+    public const string VERSION = "1.2.0";
+    public const string AUTHORS = "Vigaro";
         
     private void OnEnable()
     {
@@ -48,6 +51,7 @@ public class Plugin : BaseUnityPlugin
         try
         {
             BeeEnums.RegisterValues();
+            BeeOptions.RegisterOI();
             
             if (IsInit) return;
             IsInit = true;
@@ -57,6 +61,7 @@ public class Plugin : BaseUnityPlugin
             Futile.atlasManager.LoadAtlas("atlases/floof");
             Futile.atlasManager.LoadAtlas("atlases/floof2");
             Futile.atlasManager.LoadAtlas("atlases/beecathands");
+            Futile.atlasManager.LoadImage("atlases/beecatstinger");
 
             TailTexture = new Texture2D(150, 75, TextureFormat.ARGB32, false);
             var tailTextureFile = AssetManager.ResolveFilePath("textures/beecattail.png");
@@ -69,7 +74,9 @@ public class Plugin : BaseUnityPlugin
             var bundle = AssetBundle.LoadFromFile(AssetManager.ResolveFilePath("assetbundles/beecatshaders"));
             Custom.rainWorld.Shaders["BeecatStaminaBar"] = FShader.CreateShader("BeecatStaminaBar", bundle.LoadAsset<Shader>("Assets/BeecatStaminaBar.shader"));
 
-            PlayerHooks.Apply();
+            PlayerMiscHooks.Apply();
+            PlayerFlightHooks.Apply();
+            PlayerCombatHooks.Apply();
             PlayerGraphicsHooks.Apply();
             //RoomHooks.Init();
             //SaveDataHooks.Init();
@@ -81,7 +88,7 @@ public class Plugin : BaseUnityPlugin
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex);
+            Debug.LogException(ex);
         }
     }
 }

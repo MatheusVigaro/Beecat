@@ -38,11 +38,11 @@ public class Flower : PlayerCarryableItem, IDrawable
 
     public void DrawSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
-        var pos = Vector2.Lerp(base.firstChunk.lastPos, base.firstChunk.pos, timeStacker);
+        var pos = Vector2.Lerp(firstChunk.lastPos, firstChunk.pos, timeStacker);
         sLeaser.sprites[0].x = pos.x - camPos.x;
         sLeaser.sprites[0].y = pos.y - camPos.y;
 
-        if (base.slatedForDeletetion || this.room != rCam.room)
+        if (slatedForDeletetion || room != rCam.room)
         {
             sLeaser.CleanSpritesAndRemove();
         }
@@ -54,7 +54,7 @@ public class Flower : PlayerCarryableItem, IDrawable
         sLeaser.sprites[0] = new FSprite("SkyDandelion", true);
         sLeaser.sprites[0].color = Color.red;
         sLeaser.sprites[0].scale = 2;
-        this.AddToContainer(sLeaser, rCam, null);
+        AddToContainer(sLeaser, rCam, null);
     }
     bool cutsceneStarted;
 

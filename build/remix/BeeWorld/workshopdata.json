@@ -2,7 +2,7 @@
   "Title": "Beecat",
   "Description": "Beecat",
   "ID": "beeworld",
-  "Version": "1.1.0",
+  "Version": "1.2.0",
   "TargetGameVersion": "v1.9.07b",
   "Requirements": "slime-cubed.slugbase",
   "RequirementNames": "SlugBase",
@@ -13,5 +13,5 @@
     "Game Mechanics"
   ],
   "WorkshopID": 2939738770,
-  "UploadFilesOnly": false
+  "UploadFilesOnly": true
 }
