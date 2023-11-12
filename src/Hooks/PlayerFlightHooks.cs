@@ -28,8 +28,6 @@ public static class PlayerFlightHooks
         const float flightAirFriction = 0.7f;
         const float flightKickinDuration = 6f;
         
-        self.room.game.session.saveState
-
         if (bee.CanFly)
         {
             if (self.animation == Player.AnimationIndex.HangFromBeam)
