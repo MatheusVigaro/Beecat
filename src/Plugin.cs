@@ -1,8 +1,6 @@
 ﻿using BepInEx;
 using System.Security.Permissions;
 using System.Security;
-using SlugBase.Features;
-using static SlugBase.Features.FeatureTypes;
 using BeeWorld.Hooks;
 using System.IO;
 using Fisobs.Core;
@@ -19,7 +17,7 @@ public class Plugin : BaseUnityPlugin
 {
     public const string MOD_ID = "beeworld";
     public const string MOD_NAME = "Beecat";
-    public const string VERSION = "1.2.0";
+    public const string VERSION = "1.3.0";
     public const string AUTHORS = "Vigaro";
         
     private void OnEnable()

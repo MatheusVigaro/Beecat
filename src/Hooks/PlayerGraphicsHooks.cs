@@ -370,6 +370,12 @@ public static class PlayerGraphicsHooks
         sLeaser.sprites[bee.floofSprite].y = floofPos.y;
         sLeaser.sprites[bee.floofSprite].color = fluffColor;
 
+        if (bee.IsBup)
+        {
+            sLeaser.sprites[bee.floofSprite].scaleY = 0.55f;
+            sLeaser.sprites[bee.floofSprite].scaleX = 0.70f;
+        }
+
         if (bee.wingStamina < bee.LowWingStamina && !self.player.dead)
         {
             sLeaser.sprites[9].element = Futile.atlasManager.GetElementWithName("FaceStunned");
@@ -406,6 +412,7 @@ public static class PlayerGraphicsHooks
         //-- Stamina HUD stuff
         sLeaser.sprites[bee.staminaSprite].SetPosition(Vector2.Lerp(bee.staminaLastPos, bee.staminaPos, timeStacker) - camPos);
         sLeaser.sprites[bee.staminaSprite].alpha = Mathf.Lerp(bee.staminaLastFade, bee.staminaFade, timeStacker);
+        sLeaser.sprites[bee.staminaSprite].isVisible = !bee.IsBup;
 
         var currentStaminaFill = Mathf.Lerp(bee.staminaLastFill, bee.staminaFill, timeStacker);
         var staminaMeterColor = Color.Lerp(LowStaminaColor, FullStaminaColor, currentStaminaFill);
@@ -416,7 +423,7 @@ public static class PlayerGraphicsHooks
         //-- Wings stuff
 
         Vector2 vector = Vector3.Slerp(bee.lastZRotation, bee.zRotation, timeStacker);
-        var vector2 = Vector2.Lerp(Vector2.Lerp(self.player.bodyChunks[1].lastPos, self.player.bodyChunks[1].pos, timeStacker), Vector2.Lerp(self.player.bodyChunks[0].lastPos, self.player.bodyChunks[0].pos, timeStacker), 0.5f);
+        var vector2 = Vector2.Lerp(Vector2.Lerp(self.player.bodyChunks[1].lastPos, self.player.bodyChunks[1].pos, timeStacker), Vector2.Lerp(self.player.bodyChunks[0].lastPos, self.player.bodyChunks[0].pos, timeStacker), bee.IsBup ? 0.1f : 0.5f);
         var normalized = (Vector2.Lerp(self.player.bodyChunks[1].lastPos, self.player.bodyChunks[1].pos, timeStacker) - Vector2.Lerp(self.player.bodyChunks[0].lastPos, self.player.bodyChunks[0].pos, timeStacker)).normalized;
         var a = Custom.PerpendicularVector(-normalized);
         var num = Custom.AimFromOneVectorToAnother(-normalized, normalized);

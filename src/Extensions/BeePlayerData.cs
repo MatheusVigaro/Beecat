@@ -143,6 +143,16 @@ public class BeePlayerData
         StripeColor = pg.GetColor(BeeEnums.Color.TailStripes) ?? Custom.hexToColor("010101");
         AntennaeColor = pg.GetColor(BeeEnums.Color.Antennae) ?? Custom.hexToColor("010101");
         FluffColor = pg.GetColor(BeeEnums.Color.NeckFluff) ?? Custom.hexToColor("161c24");
+
+        if (IsBup && player.npcStats != null)
+        {
+            var hslColor = Custom.RGB2HSL(BodyColor);
+            player.npcStats.H = hslColor.x;
+            player.npcStats.S = hslColor.y;
+            player.npcStats.L = hslColor.z;
+            player.npcStats.Dark = false;
+            player.npcStats.EyeColor = 0;
+        }
     }
 
     public void StopFlight()
@@ -188,6 +198,8 @@ public class BeePlayerData
 
     public void RecreateTailIfNeeded(PlayerGraphics self)
     {
+        if (IsBup) return;
+        
         var currentFood = self.player.CurrentFood;
         var oldTail = self.tail;
 
