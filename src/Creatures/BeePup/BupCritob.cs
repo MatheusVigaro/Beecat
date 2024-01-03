@@ -10,7 +10,7 @@ public class BupCritob : Critob
 {
     public BupCritob() : base(BeeEnums.CreatureType.Bup)
     {
-        Icon = new SimpleIcon("Kill_Black_Lizard", new Color(1, 0.8627450980392157f, 0.8862745098039215f));
+        Icon = new SimpleIcon("Kill_Slugcat", new Color(1f, 0.81f, 0.05f));
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new SandboxPerformanceCost(0.5f, 0.5f);
         RegisterUnlock(KillScore.Configurable(6), BeeEnums.SandboxUnlockID.Bup);
