@@ -74,8 +74,11 @@ public class Plugin : BaseUnityPlugin
             //WorldHooks.Init();
 
             //Content.Register(new FlowerFisob());
-            
-            Content.Register(new BupCritob());
+
+            if (ModManager.MSC)
+            {
+                Content.Register(new BupCritob());
+            }
 
             Debug.Log($"Plugin {MOD_ID} is loaded!");
         }

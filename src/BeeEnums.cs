@@ -43,8 +43,12 @@ public static class BeeEnums
         
         Sound.BeeBuzz = new SoundID("beebuzz", true);
         AbstractObject.BeeFlower = new(nameof(AbstractObject.BeeFlower), true);
-        CreatureType.Bup = new(nameof(CreatureType.Bup), true);
-        SandboxUnlockID.Bup = new(nameof(SandboxUnlockID.Bup), true);
+
+        if (ModManager.MSC)
+        {
+            CreatureType.Bup = new(nameof(CreatureType.Bup), true);
+            SandboxUnlockID.Bup = new(nameof(SandboxUnlockID.Bup), true);
+        }
     }
 
     public static void UnregisterValues()
