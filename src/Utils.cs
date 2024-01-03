@@ -1,26 +1,10 @@
-﻿using System.Linq;
-using RWCustom;
+﻿using RWCustom;
 using UnityEngine;
 
 namespace BeeWorld;
 
 public static class Utils
 {
-    public static bool PlayerHasCustomTail(PlayerGraphics pg)
-    {
-        if (!ModManager.ActiveMods.Any(x => x.id == "dressmyslugcat"))
-        {
-            return true;
-        }
-
-        return PlayerHasCustomTailDMS(pg);
-    }
-
-    public static bool PlayerHasCustomTailDMS(PlayerGraphics pg)
-    {
-        return !(DressMySlugcat.Customization.For(pg)?.CustomTail?.EffectiveCustTailShape ?? false);
-    }
-
     public static void MapTextureColor(Texture2D texture, int alpha, Color32 to, bool apply = true)
     {
         var colors = texture.GetPixels32();
