@@ -10,15 +10,17 @@ public class BupCritob : Critob
 {
     public BupCritob() : base(BeeEnums.CreatureType.Bup)
     {
-        Icon = new SimpleIcon("Kill_Slugcat", new Color(1f, 0.81f, 0.05f));
+        Icon = new SimpleIcon("Kill_Slugcat", new Color(1, 0.8117647058823529f, 0.050980392156862744f));
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new SandboxPerformanceCost(0.5f, 0.5f);
         RegisterUnlock(KillScore.Configurable(6), BeeEnums.SandboxUnlockID.Bup);
+        BupHook hooks = new BupHook();
+        hooks.ApplyMyHooks();
     }
 
     public override int ExpeditionScore() => 6;
 
-    public override Color DevtoolsMapColor(AbstractCreature acrit) => new(1, 0.8627450980392157f, 0.8862745098039215f);
+    public override Color DevtoolsMapColor(AbstractCreature acrit) => new(1, 0.8117647058823529f, 0.050980392156862744f);
 
     public override string DevtoolsMapName(AbstractCreature acrit) => "Bup";
 
@@ -69,5 +71,17 @@ public class BupCritob : Critob
         var s = new Relationships(Type);
         s.Rivals(CreatureTemplate.Type.LizardTemplate, .1f);
         s.HasDynamicRelationship(CreatureTemplate.Type.Slugcat, .5f);
+    }
+}
+public class BupHook
+{
+    public void ApplyMyHooks()
+    {
+        On.MoreSlugcats.SlugNPCAI.Update += SlugNPCAI_Update;
+    }
+
+    private void SlugNPCAI_Update(On.MoreSlugcats.SlugNPCAI.orig_Update orig, SlugNPCAI self)
+    {
+        orig(self); //gonna try this soon
     }
 }
