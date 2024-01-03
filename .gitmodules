@@ -1,0 +1,3 @@
+[submodule "SnowBee"]
+	path = SnowBee
+	url = https://github.com/MatheusVigaro/SnowBee.git
