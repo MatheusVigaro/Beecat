@@ -1,10 +1,4 @@
-﻿using RWCustom;
-using System;
-using BeeWorld.Extensions;
-using UnityEngine;
-using Random = UnityEngine.Random;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
+﻿using BeeWorld.Extensions;
 
 namespace BeeWorld.Hooks;
 

@@ -1,13 +1,11 @@
 ﻿using BepInEx;
 using System.Security.Permissions;
 using System.Security;
-using System;
-using UnityEngine;
 using SlugBase.Features;
 using static SlugBase.Features.FeatureTypes;
 using BeeWorld.Hooks;
 using System.IO;
-using RWCustom;
+using Fisobs.Core;
 
 [module: UnverifiableCode]
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -35,11 +33,6 @@ public class Plugin : BaseUnityPlugin
         orig(self, newlyDisabledMods);
         BeeEnums.UnregisterValues();
     }
-
-    public static readonly PlayerFeature<int> WingStamina = PlayerInt("beeworld/wingstamina");
-    public static readonly PlayerFeature<float> WingStaminaRecovery = PlayerFloat("beeworld/wingstaminarecovery");
-    public static readonly PlayerFeature<float> WingSpeed = PlayerFloat("beeworld/wingsspeed");
-    public static readonly PlayerFeature<bool> BeeCompanion = PlayerBool("beeworld/beecompanion");
 
     public static Texture2D TailTexture;
 
@@ -83,6 +76,8 @@ public class Plugin : BaseUnityPlugin
             //WorldHooks.Init();
 
             //Content.Register(new FlowerFisob());
+            
+            Content.Register(new BupCritob());
 
             Debug.Log($"Plugin {MOD_ID} is loaded!");
         }

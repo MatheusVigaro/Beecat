@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace BeeWorld.Extensions;
+﻿namespace BeeWorld.Extensions;
 
 public readonly struct BeePlayerInput
 {
@@ -12,7 +10,7 @@ public readonly struct BeePlayerInput
     }
 
     public bool StingerAttackPressed =>
-            player.playerState.playerNumber switch
+            !player.IsBup() && player.playerState.playerNumber switch
             {
                 0 => Input.GetKey(BeeOptions.StingerAttackPlayer1.Value) || player.input[0].controllerType == Options.ControlSetup.Preset.KeyboardSinglePlayer && Input.GetKey(BeeOptions.StingerAttackKeyboard.Value),
                 1 => Input.GetKey(BeeOptions.StingerAttackPlayer2.Value) || player.input[0].controllerType == Options.ControlSetup.Preset.KeyboardSinglePlayer && Input.GetKey(BeeOptions.StingerAttackKeyboard.Value),

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using RWCustom;
+﻿using System.Runtime.CompilerServices;
 using SlugBase.DataTypes;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace BeeWorld.Extensions;
 
@@ -19,6 +14,7 @@ public class BeePlayerData
     private const float StingerAttackRange = 40;
 
     public readonly bool IsBee;
+    public readonly bool IsBup;
 
     public bool CanFly => WingStaminaMax > 0 && WingSpeed > 0;
     public float MinimumFlightStamina => WingStaminaMax * 0.1f;
@@ -55,8 +51,8 @@ public class BeePlayerData
     public BodyChunk stingerTargetChunk;
 
     public Vector2 CurrentStingerAttackPos => Vector2.Lerp(StingerOriginPos, StingerTargetPos, (StingerAttackTime - stingerAttackCounter) / (float)StingerAttackTime);
-    public Vector2 StingerOriginPos => playerRef.Get().bodyChunks[0].pos + stingerRelativeOriginPos;
-    public Vector2 StingerTargetPos => stingerTargetChunk != null ? stingerTargetChunk.pos + ((stingerTargetChunk.pos - playerRef.Get().bodyChunks[1].pos).normalized * 10) : playerRef.Get().bodyChunks[0].pos + stingerRelativeTargetPos;
+    public Vector2 StingerOriginPos => player.bodyChunks[0].pos + stingerRelativeOriginPos;
+    public Vector2 StingerTargetPos => stingerTargetChunk != null ? stingerTargetChunk.pos + ((stingerTargetChunk.pos - player.bodyChunks[1].pos).normalized * 10) : player.bodyChunks[0].pos + stingerRelativeTargetPos;
     
     public Vector2 staminaLastPos;
     public Vector2 staminaPos;
@@ -75,7 +71,7 @@ public class BeePlayerData
     public Vector2 lastZRotation;
     public float wingYAdjust;
 
-    public WeakReference<Player> playerRef;
+    public readonly Player player;
 
     public DynamicSoundLoop flyingBuzzSound;
 
@@ -91,16 +87,17 @@ public class BeePlayerData
 
     public BeePlayerData(Player player)
     {
-        IsBee = player.slugcatStats.name == BeeEnums.Beecat;
+        IsBup = player.abstractCreature.creatureTemplate.type == BeeEnums.CreatureType.Bup;
+        IsBee = IsBup || player.slugcatStats.name == BeeEnums.Beecat;
 
-        playerRef = new WeakReference<Player>(player);
+        this.player = player;
 
         if (!IsBee)
         {
             return;
         }
 
-        SetupSounds(player);
+        SetupSounds();
 
         lastTail = -1;
         wingStamina = WingStaminaMax;
@@ -126,12 +123,10 @@ public class BeePlayerData
         Utils.MapTextureColor(tailTexture, 255, StripeColor, false);
         Utils.MapTextureColor(tailTexture, 0, TailColor);
 
-        if (playerRef.TryGetTarget(out var player)) {
-            TailAtlas = Futile.atlasManager.LoadAtlasFromTexture("beecattailtexture_" + player.playerState.playerNumber + Time.time + Random.value, tailTexture, false);
-        }
+        TailAtlas = Futile.atlasManager.LoadAtlasFromTexture("beecattailtexture_" + player.playerState.playerNumber + Time.time + Random.value, tailTexture, false);
     }
 
-    private void SetupSounds(Player player)
+    private void SetupSounds()
     {
         flyingBuzzSound = new ChunkDynamicSoundLoop(player.bodyChunks[0]);
         flyingBuzzSound.sound = BeeEnums.Sound.BeeBuzz;
@@ -159,11 +154,6 @@ public class BeePlayerData
 
     public void InitiateFlight()
     {
-        if (!playerRef.TryGetTarget(out var player))
-        {
-            return;
-        }
-
         player.bodyMode = Player.BodyModeIndex.Default;
         player.animation = Player.AnimationIndex.None;
         player.wantToJump = 0;
@@ -174,11 +164,6 @@ public class BeePlayerData
 
     public bool CanSustainFlight()
     {
-        if (!playerRef.TryGetTarget(out var player))
-        {
-            return false;
-        }
-
         return wingStamina > 0 &&
                preventFlight <= 0 &&
                player.canJump <= 0 &&
@@ -267,8 +252,6 @@ public class BeePlayerData
 
     public void StingerAttack(Vector2 relativeVisualTarget, Vector2 relativeActualTarget)
     {
-        var player = playerRef.Get();
-
         var absTarget = player.bodyChunks[0].pos + relativeVisualTarget;
         player.room.PlaySound(SoundID.Vulture_Peck, absTarget, Random.Range(0.7f, 0.9f), Random.Range(0.9f, 1.1f));
         
@@ -301,10 +284,18 @@ public static class PlayerExtension
     public static TailSegment[] Tail(this Player player) => player.PlayerGraphics().tail;
 
     public static bool IsBee(this Player player) => player.Bee().IsBee;
-
+    
     public static bool IsBee(this Player player, out BeePlayerData bee)
     {
         bee = player.Bee();
         return bee.IsBee;
+    }
+    
+    public static bool IsBup(this Player player) => player.Bee().IsBup;
+    
+    public static bool IsBup(this Player player, out BeePlayerData bup)
+    {
+        bup = player.Bee();
+        return bup.IsBup;
     }
 }

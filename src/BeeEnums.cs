@@ -1,11 +1,11 @@
-﻿using SlugBase.DataTypes;
+﻿using System.Runtime.CompilerServices;
+using SlugBase.DataTypes;
 
 namespace BeeWorld;
 
 public static class BeeEnums
 {
     public static SlugcatStats.Name Beecat = new("bee");
-    
     public static class Sound
     {
         public static SoundID BeeBuzz;
@@ -18,32 +18,40 @@ public static class BeeEnums
 
     public static class Color
     {
-        public static PlayerColor Body;
-        public static PlayerColor Eyes;
-        public static PlayerColor Wings;
-        public static PlayerColor Tail;
-        public static PlayerColor TailStripes;
-        public static PlayerColor Antennae;
-        public static PlayerColor NeckFluff;
+        public static PlayerColor Body = new(nameof(Body));
+        public static PlayerColor Eyes = new(nameof(Eyes));
+        public static PlayerColor Wings = new(nameof(Wings));
+        public static PlayerColor Tail = new(nameof(Tail));
+        public static PlayerColor TailStripes = new("Tail Stripes");
+        public static PlayerColor Antennae = new(nameof(Antennae));
+        public static PlayerColor NeckFluff = new("Neck Fluff");
+    }
+
+    public static class CreatureType
+    {
+        public static CreatureTemplate.Type Bup;
+    }
+
+    public static class SandboxUnlockID
+    {
+        public static MultiplayerUnlocks.SandboxUnlockID Bup;
     }
 
     public static void RegisterValues()
     {
+        RuntimeHelpers.RunClassConstructor(typeof(Color).TypeHandle);        
+        
         Sound.BeeBuzz = new SoundID("beebuzz", true);
-        AbstractObject.BeeFlower = new AbstractPhysicalObject.AbstractObjectType("BeeFlower", true);
-
-        Color.Body = new PlayerColor("Body");
-        Color.Eyes = new PlayerColor("Eyes");
-        Color.Wings = new PlayerColor("Wings");
-        Color.Tail = new PlayerColor("Tail");
-        Color.TailStripes = new PlayerColor("Tail Stripes");
-        Color.Antennae = new PlayerColor("Antennae");
-        Color.NeckFluff = new PlayerColor("Neck Fluff");
+        AbstractObject.BeeFlower = new(nameof(AbstractObject.BeeFlower), true);
+        CreatureType.Bup = new(nameof(CreatureType.Bup), true);
+        SandboxUnlockID.Bup = new(nameof(SandboxUnlockID.Bup), true);
     }
 
     public static void UnregisterValues()
     {
-        Sound.BeeBuzz.Unregister();
-        AbstractObject.BeeFlower.Unregister();
+        Sound.BeeBuzz?.Unregister();
+        AbstractObject.BeeFlower?.Unregister();
+        CreatureType.Bup?.Unregister();
+        SandboxUnlockID.Bup.Unregister();
     }
 }

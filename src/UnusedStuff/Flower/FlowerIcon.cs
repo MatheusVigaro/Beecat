@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using Fisobs.Core;
+﻿using Fisobs.Core;
 
 namespace BeeWorld;
 

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BeeWorld;
+﻿namespace BeeWorld;
 
 public class RoomPathFinder
 {
