@@ -103,51 +103,53 @@ public class BupHook
                     {
                         self.Bee().StingerAttack(new Vector2(60 * self.flipDirection, 20), new Vector2(20 * self.flipDirection, 20));
                     }
-                }
-                
 
 
 
-                if (self.Bee().isFlying)
-                {
-                    Player nearbyBee = null;
-                    foreach (var otherPlayer in self.room.updateList.OfType<Player>())
+
+
+                    // -- fly
+                    if (self.Bee().isFlying)
                     {
-                        if (!otherPlayer.isNPC && Custom.DistLess(self.bodyChunks[0].pos, otherPlayer.bodyChunks[0].pos, otherPlayer.bodyChunks[0].rad + 100))
+                        Player nearbyBee = null;
+                        foreach (var otherPlayer in self.room.updateList.OfType<Player>())
                         {
-                            nearbyBee = otherPlayer;
-                            break;
+                            if (!otherPlayer.isNPC && Custom.DistLess(self.bodyChunks[0].pos, otherPlayer.bodyChunks[0].pos, otherPlayer.bodyChunks[0].rad + 100))
+                            {
+                                nearbyBee = otherPlayer;
+                                break;
+                            }
+                        }
+                        if (nearbyBee != null && nearbyBee.graphicsModule != null)
+                        {
+                            float direction = Mathf.Sign(nearbyBee.bodyChunks[0].pos.x - self.bodyChunks[0].pos.x);
+
+                            // Adjust the velocity based on the direction
+                            self.bodyChunks[0].vel.x = direction;
+                            self.bodyChunks[1].vel.x = direction;
+                        }
+                        else
+                        {
+                            var dir = Random.Range(0, 500);
+                            self.bodyChunks[0].vel.x += (dir >= 300) ? 1 : -1;
+                            self.bodyChunks[1].vel.x += (dir >= 300) ? 1 : -1;
+
                         }
                     }
-                    if (nearbyBee != null && nearbyBee.graphicsModule != null)
-                    {
-                        float direction = Mathf.Sign(nearbyBee.bodyChunks[0].pos.x - self.bodyChunks[0].pos.x);
-
-                        // Adjust the velocity based on the direction
-                        self.bodyChunks[0].vel.x = direction;
-                        self.bodyChunks[1].vel.x = direction;
-                    }
-                    else
-                    {
-                        var dir = Random.Range(0, 500);
-                        self.bodyChunks[0].vel.x += (dir >= 300) ? 1 : -1;
-                        self.bodyChunks[1].vel.x += (dir >= 300) ? 1 : -1;
-                        
-                    }
-                }
-                else if (self.bodyChunks[0].vel.y <= -10 )
-                {
-                    self.Bee().isFlying = true;
-                }
-                if (self.input[0].jmp)
-                {
-                    if(self.Bee().isFlying)
-                    {
-                        self.Bee().isFlying = false;
-                    }
-                    else
+                    else if (self.bodyChunks[0].vel.y <= -10)
                     {
                         self.Bee().isFlying = true;
+                    }
+                    if (self.input[0].jmp)
+                    {
+                        if (self.Bee().isFlying)
+                        {
+                            self.Bee().isFlying = false;
+                        }
+                        else
+                        {
+                            self.Bee().isFlying = true;
+                        }
                     }
                 }
             }
