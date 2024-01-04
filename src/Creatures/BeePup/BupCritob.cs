@@ -89,18 +89,22 @@ public class BupHook
             {
 
                 Creature Creaturenearby = null;
-                foreach (var otherPlayers in self.room.updateList.OfType<Creature>())
+                if(self.room != null)
                 {
-                    if (otherPlayers is not Player && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 20))
+                    foreach (var otherPlayers in self.room.updateList.OfType<Creature>())
                     {
-                        Creaturenearby = otherPlayers;
-                        break;
+                        if (otherPlayers is not Player && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 20))
+                        {
+                            Creaturenearby = otherPlayers;
+                            break;
+                        }
+                    }
+                    if (Creaturenearby != null && Creaturenearby.graphicsModule != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
+                    {
+                        self.Bee().StingerAttack(new Vector2(60 * self.flipDirection, 20), new Vector2(20 * self.flipDirection, 20));
                     }
                 }
-                if (Creaturenearby != null && Creaturenearby.graphicsModule != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
-                {
-                    self.Bee().StingerAttack(new Vector2(60 * self.flipDirection, 20), new Vector2(20 * self.flipDirection, 20));
-                }
+                
 
 
 
