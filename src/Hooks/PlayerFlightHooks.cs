@@ -88,10 +88,23 @@ public static class PlayerFlightHooks
                 bee.wingStaminaRecoveryCooldown = 40;
                 bee.wingStamina--;
 
-                if (!self.input[0].jmp || !bee.CanSustainFlight())
+                if (self.isNPC)
                 {
-                    bee.StopFlight();
+                    if (!bee.CanSustainFlight())
+                    {
+                        bee.StopFlight();
+                    }
                 }
+                else
+                {
+                    if (!self.input[0].jmp || !bee.CanSustainFlight())
+                    {
+                        bee.StopFlight();
+                    }
+                }
+
+
+
             }
             else
             {

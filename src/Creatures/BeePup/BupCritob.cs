@@ -1,4 +1,5 @@
-﻿using DevInterface;
+﻿using BeeWorld.Extensions;
+using DevInterface;
 using Fisobs.Core;
 using Fisobs.Creatures;
 using Fisobs.Sandbox;
@@ -52,7 +53,6 @@ public class BupCritob : Critob
         cf.stowFoodInDen = true;
         cf.throughSurfaceVision = 0.5f;
         cf.movementBasedVision = 0.5f;
-        cf.dangerousToPlayer = 0.45f;
         cf.communityInfluence = 0.1f;
         cf.bodySize = 1;
         cf.usesCreatureHoles = false;
@@ -73,15 +73,80 @@ public class BupCritob : Critob
         s.HasDynamicRelationship(CreatureTemplate.Type.Slugcat, .5f);
     }
 }
+
 public class BupHook
 {
     public void ApplyMyHooks()
     {
-        On.MoreSlugcats.SlugNPCAI.Update += SlugNPCAI_Update;
+        On.Player.Update += BupsAI;
     }
-
-    private void SlugNPCAI_Update(On.MoreSlugcats.SlugNPCAI.orig_Update orig, SlugNPCAI self)
+    private void BupsAI(On.Player.orig_Update orig, Player self, bool eu)
     {
-        orig(self); //gonna try this soon
+        orig(self, eu);
+        if (self.isNPC)
+        {
+            if (self.Template.type.value == "Bup")
+            {
+
+                Creature Creaturenearby = null;
+                foreach (var otherPlayers in self.room.updateList.OfType<Creature>())
+                {
+                    if (otherPlayers is not Player && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 20))
+                    {
+                        Creaturenearby = otherPlayers;
+                        break;
+                    }
+                }
+                if (Creaturenearby != null && Creaturenearby.graphicsModule != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
+                {
+                    self.Bee().StingerAttack(new Vector2(60 * self.flipDirection, 20), new Vector2(20 * self.flipDirection, 20));
+                }
+
+
+
+                if (self.Bee().isFlying)
+                {
+                    Player nearbyBee = null;
+                    foreach (var otherPlayer in self.room.updateList.OfType<Player>())
+                    {
+                        if (!otherPlayer.isNPC && Custom.DistLess(self.bodyChunks[0].pos, otherPlayer.bodyChunks[0].pos, otherPlayer.bodyChunks[0].rad + 100))
+                        {
+                            nearbyBee = otherPlayer;
+                            break;
+                        }
+                    }
+                    if (nearbyBee != null && nearbyBee.graphicsModule != null)
+                    {
+                        float direction = Mathf.Sign(nearbyBee.bodyChunks[0].pos.x - self.bodyChunks[0].pos.x);
+
+                        // Adjust the velocity based on the direction
+                        self.bodyChunks[0].vel.x = direction;
+                        self.bodyChunks[1].vel.x = direction;
+                    }
+                    else
+                    {
+                        var dir = Random.Range(0, 500);
+                        self.bodyChunks[0].vel.x += (dir >= 300) ? 1 : -1;
+                        self.bodyChunks[1].vel.x += (dir >= 300) ? 1 : -1;
+                        
+                    }
+                }
+                else if (self.bodyChunks[0].vel.y <= -10 )
+                {
+                    self.Bee().isFlying = true;
+                }
+                if (self.input[0].jmp)
+                {
+                    if(self.Bee().isFlying)
+                    {
+                        self.Bee().isFlying = false;
+                    }
+                    else
+                    {
+                        self.Bee().isFlying = true;
+                    }
+                }
+            }
+        }
     }
 }
