@@ -121,53 +121,32 @@ public class BupHook
                                 return;
                             }
                         }
-
-                        Player nearbyBee = null;
-                        foreach (var otherPlayer in self.room.updateList.OfType<Player>())
+                        if (self.Bee().CDMET)
                         {
-                            if (!otherPlayer.isNPC && Custom.DistLess(self.bodyChunks[0].pos, otherPlayer.bodyChunks[0].pos, otherPlayer.bodyChunks[0].rad + 100))
-                            {
-                                nearbyBee = otherPlayer;
-                                break;
-                            }
-                        }
-                        if (nearbyBee != null && nearbyBee.graphicsModule != null)
-                        {
-                            float direction = Mathf.Sign(nearbyBee.bodyChunks[0].pos.x - self.bodyChunks[0].pos.x);
-
-                            // Adjust the velocity based on the direction
-                            self.bodyChunks[0].vel.x = direction;
-                            self.bodyChunks[1].vel.x = direction;
+                            self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
                         }
                         else
                         {
-                            if (self.Bee().CDMET)
+                            for (int i = 0; i <= 100; i += 10)
                             {
-                                self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
+                                if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y)).AnyBeam)
+                                {
+                                    self.Bee().polepos = new Vector2(-i, 0);
+                                    self.Bee().CDMET = true;
+                                    return;
+                                }
                             }
-                            else
+
+                            // If the condition is not met in the negative direction
+                            if (!self.Bee().CDMET)
                             {
                                 for (int i = 0; i <= 100; i += 10)
                                 {
-                                    if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y)).AnyBeam)
-                                    {   
-                                        self.Bee().polepos = new Vector2(-i, 0);
+                                    if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y)).AnyBeam)
+                                    {
+                                        self.Bee().polepos = new Vector2(i, 0);
                                         self.Bee().CDMET = true;
-                                        return; 
-                                    }
-                                }
-
-                                // If the condition is not met in the negative direction
-                                if (!self.Bee().CDMET)
-                                {
-                                    for (int i = 0; i <= 100; i += 10)
-                                    {   
-                                        if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y)).AnyBeam)
-                                        {
-                                            self.Bee().polepos = new Vector2(i, 0);
-                                            self.Bee().CDMET = true;
-                                            return; 
-                                        }
+                                        return;
                                     }
                                 }
                             }
