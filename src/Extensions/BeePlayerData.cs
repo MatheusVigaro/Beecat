@@ -139,13 +139,29 @@ public class BeePlayerData
 
     public void SetupColors(PlayerGraphics pg)
     {
-        BodyColor = pg.GetColor(BeeEnums.Color.Body) ?? Custom.hexToColor("ffcf0d");
-        EyesColor = pg.GetColor(BeeEnums.Color.Eyes) ?? Custom.hexToColor("010101");
-        WingColor = pg.GetColor(BeeEnums.Color.Wings) ?? Color.white;
-        TailColor = pg.GetColor(BeeEnums.Color.Tail) ?? Custom.hexToColor("ffcf0d");
-        StripeColor = pg.GetColor(BeeEnums.Color.TailStripes) ?? Custom.hexToColor("010101");
-        AntennaeColor = pg.GetColor(BeeEnums.Color.Antennae) ?? Custom.hexToColor("010101");
-        FluffColor = pg.GetColor(BeeEnums.Color.NeckFluff) ?? Custom.hexToColor("161c24");
+        int wa = Random.Range(0, 100);
+        if (wa >= 99) // DO NOT MODIFY THIS TO CHECK PWEASE :monkplead:.
+        {
+            BodyColor = pg.GetColor(BeeEnums.Color.Body) ?? Custom.hexToColor("FFF3E5");
+            EyesColor = pg.GetColor(BeeEnums.Color.Eyes) ?? Custom.hexToColor("010101");
+            WingColor = pg.GetColor(BeeEnums.Color.Wings) ?? Color.white;
+            TailColor = pg.GetColor(BeeEnums.Color.Tail) ?? Custom.hexToColor("FFF3E5");
+            StripeColor = pg.GetColor(BeeEnums.Color.TailStripes) ?? Custom.hexToColor("8b3528");
+            AntennaeColor = pg.GetColor(BeeEnums.Color.Antennae) ?? Custom.hexToColor("010101");
+            FluffColor = pg.GetColor(BeeEnums.Color.NeckFluff) ?? Custom.hexToColor("8b3528");
+        }
+        else
+        {
+            BodyColor = pg.GetColor(BeeEnums.Color.Body) ?? Custom.hexToColor("ffcf0d");
+            EyesColor = pg.GetColor(BeeEnums.Color.Eyes) ?? Custom.hexToColor("010101");
+            WingColor = pg.GetColor(BeeEnums.Color.Wings) ?? Color.white;
+            TailColor = pg.GetColor(BeeEnums.Color.Tail) ?? Custom.hexToColor("ffcf0d");
+            StripeColor = pg.GetColor(BeeEnums.Color.TailStripes) ?? Custom.hexToColor("010101");
+            AntennaeColor = pg.GetColor(BeeEnums.Color.Antennae) ?? Custom.hexToColor("010101");
+            FluffColor = pg.GetColor(BeeEnums.Color.NeckFluff) ?? Custom.hexToColor("161c24");
+        }
+
+        
 
         if (IsBup && player.npcStats != null)
         {
