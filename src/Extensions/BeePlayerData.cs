@@ -139,8 +139,11 @@ public class BeePlayerData
 
     public void SetupColors(PlayerGraphics pg)
     {
+        var state = Random.state;
+        Random.InitState(player.abstractCreature.ID.RandomSeed);
+        
         int wa = Random.Range(0, 100);
-        if (wa >= 99) // DO NOT MODIFY THIS TO CHECK PWEASE :monkplead:.
+        if (IsBup && wa >= 99) // DO NOT MODIFY THIS TO CHECK PWEASE :monkplead:.
         {
             BodyColor = pg.GetColor(BeeEnums.Color.Body) ?? Custom.hexToColor("FFF3E5");
             EyesColor = pg.GetColor(BeeEnums.Color.Eyes) ?? Custom.hexToColor("010101");
@@ -160,6 +163,8 @@ public class BeePlayerData
             AntennaeColor = pg.GetColor(BeeEnums.Color.Antennae) ?? Custom.hexToColor("010101");
             FluffColor = pg.GetColor(BeeEnums.Color.NeckFluff) ?? Custom.hexToColor("161c24");
         }
+
+        Random.state = state;
 
         
 
