@@ -150,7 +150,7 @@ public class BeePlayerData
             WingColor = pg.GetColor(BeeEnums.Color.Wings) ?? Color.white;
             TailColor = pg.GetColor(BeeEnums.Color.Tail) ?? Custom.hexToColor("FFF3E5");
             StripeColor = pg.GetColor(BeeEnums.Color.TailStripes) ?? Custom.hexToColor("8b3528");
-            AntennaeColor = pg.GetColor(BeeEnums.Color.Antennae) ?? Custom.hexToColor("010101");
+            AntennaeColor = pg.GetColor(BeeEnums.Color.Antennae) ?? Custom.hexToColor("8b3528");
             FluffColor = pg.GetColor(BeeEnums.Color.NeckFluff) ?? Custom.hexToColor("8b3528");
         }
         else
