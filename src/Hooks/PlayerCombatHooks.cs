@@ -35,7 +35,7 @@ public static class PlayerCombatHooks
         cursor.MoveAfterLabels();
 
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate((Player self) => !(self.IsBee() && self.FoodInStomach >= 8));
+        cursor.EmitDelegate((Player self) => !(self.IsBee() && self.FoodInStomach >= 8 && !self.isNPC));
         cursor.Emit(OpCodes.And);
     }
 
