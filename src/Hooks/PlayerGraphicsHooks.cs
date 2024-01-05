@@ -50,10 +50,15 @@ public static class PlayerGraphicsHooks
             newContatiner.AddChild(sLeaser.sprites[bee.stingerSprite]);
             sLeaser.sprites[bee.stingerSprite].MoveBehindOtherNode(sLeaser.sprites[2]);
 
+            //-- Antennae in front of face
             sLeaser.sprites[bee.antennaeSprite].RemoveFromContainer();
             newContatiner.AddChild(sLeaser.sprites[bee.antennaeSprite]);
+            sLeaser.sprites[bee.antennaeSprite].MoveInFrontOfOtherNode(sLeaser.sprites[9]);
+            
+            //-- Floof behind face
             sLeaser.sprites[bee.floofSprite].RemoveFromContainer();
             newContatiner.AddChild(sLeaser.sprites[bee.floofSprite]);
+            sLeaser.sprites[bee.floofSprite].MoveBehindOtherNode(sLeaser.sprites[9]);
 
             //-- Stamina HUD
             sLeaser.sprites[bee.staminaSprite].RemoveFromContainer();
