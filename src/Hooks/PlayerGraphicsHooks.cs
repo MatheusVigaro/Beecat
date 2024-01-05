@@ -27,7 +27,7 @@ public static class PlayerGraphicsHooks
 
         if (bee.initialWingSprite > 0 && sLeaser.sprites.Length > bee.initialWingSprite + 5)
         {
-            var midgroundContainer = rCam.ReturnFContainer("Midground");
+            newContatiner ??= rCam.ReturnFContainer("Midground");
             var hud2Container = rCam.ReturnFContainer("HUD2");
 
             //-- Wings go behind chest
@@ -37,7 +37,7 @@ public static class PlayerGraphicsHooks
                 {
                     var sprite = sLeaser.sprites[bee.WingSprite(i, j)];
                     sprite.RemoveFromContainer();
-                    midgroundContainer.AddChild(sprite);
+                    newContatiner.AddChild(sprite);
                     sprite.MoveBehindOtherNode(sLeaser.sprites[0]);
                 }
             }
@@ -47,13 +47,13 @@ public static class PlayerGraphicsHooks
             
             //-- Stinger go behind tail
             sLeaser.sprites[bee.stingerSprite].RemoveFromContainer();
-            midgroundContainer.AddChild(sLeaser.sprites[bee.stingerSprite]);
+            newContatiner.AddChild(sLeaser.sprites[bee.stingerSprite]);
             sLeaser.sprites[bee.stingerSprite].MoveBehindOtherNode(sLeaser.sprites[2]);
 
             sLeaser.sprites[bee.antennaeSprite].RemoveFromContainer();
-            midgroundContainer.AddChild(sLeaser.sprites[bee.antennaeSprite]);
+            newContatiner.AddChild(sLeaser.sprites[bee.antennaeSprite]);
             sLeaser.sprites[bee.floofSprite].RemoveFromContainer();
-            midgroundContainer.AddChild(sLeaser.sprites[bee.floofSprite]);
+            newContatiner.AddChild(sLeaser.sprites[bee.floofSprite]);
 
             //-- Stamina HUD
             sLeaser.sprites[bee.staminaSprite].RemoveFromContainer();
