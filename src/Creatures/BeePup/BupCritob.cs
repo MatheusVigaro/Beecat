@@ -178,7 +178,7 @@ public class BupHook
                     }
                     else 
                     {
-                        if (self.bodyChunks[0].vel.y <= -10)
+                        if (self.bodyChunks[0].vel.y <= -10 && self.onBack == null)
                         {
                             self.Bee().isFlying = true;
                         }
