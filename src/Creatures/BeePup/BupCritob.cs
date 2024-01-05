@@ -4,6 +4,8 @@ using Fisobs.Core;
 using Fisobs.Creatures;
 using Fisobs.Sandbox;
 using MoreSlugcats;
+using SlugBase.DataTypes;
+using UnityEngine.Rendering;
 
 namespace BeeWorld;
 
@@ -93,7 +95,7 @@ public class BupHook
                 {
                     foreach (var otherPlayers in self.room.updateList.OfType<Creature>())
                     {
-                        if (otherPlayers is not Player && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 20))
+                        if (otherPlayers is not Player && !otherPlayers.Template.smallCreature && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 20))
                         {
                             Creaturenearby = otherPlayers;
                             break;
@@ -111,6 +113,15 @@ public class BupHook
                     // -- fly
                     if (self.Bee().isFlying)
                     {
+                        for (int i = 0; i <= 100; i += 10)
+                        {
+                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Solid || self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Floor)
+                            {
+                                self.Bee().StopFlight();
+                                return;
+                            }
+                        }
+
                         Player nearbyBee = null;
                         foreach (var otherPlayer in self.room.updateList.OfType<Player>())
                         {
@@ -130,27 +141,50 @@ public class BupHook
                         }
                         else
                         {
-                            var dir = Random.Range(0, 500);
-                            self.bodyChunks[0].vel.x += (dir >= 300) ? 1 : -1;
-                            self.bodyChunks[1].vel.x += (dir >= 300) ? 1 : -1;
+                            if (self.Bee().CDMET)
+                            {
+                                self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
+                            }
+                            else
+                            {
+                                for (int i = 0; i <= 100; i += 10)
+                                {
+                                    if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y)).AnyBeam)
+                                    {   
+                                        self.Bee().polepos = new Vector2(-i, 0);
+                                        self.Bee().CDMET = true;
+                                        return; 
+                                    }
+                                }
 
+                                // If the condition is not met in the negative direction
+                                if (!self.Bee().CDMET)
+                                {
+                                    for (int i = 0; i <= 100; i += 10)
+                                    {   
+                                        if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y)).AnyBeam)
+                                        {
+                                            self.Bee().polepos = new Vector2(i, 0);
+                                            self.Bee().CDMET = true;
+                                            return; 
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                    else if (self.bodyChunks[0].vel.y <= -10)
+                    else 
                     {
-                        self.Bee().isFlying = true;
-                    }
-                    if (self.input[0].jmp)
-                    {
-                        if (self.Bee().isFlying)
-                        {
-                            self.Bee().isFlying = false;
-                        }
-                        else
+                        if (self.bodyChunks[0].vel.y <= -10)
                         {
                             self.Bee().isFlying = true;
                         }
+                        if (self.input[0].jmp)
+                        {
+                            self.Bee().isFlying = !self.Bee().isFlying;
+                        }
                     }
+
                 }
             }
         }

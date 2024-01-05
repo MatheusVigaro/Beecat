@@ -30,6 +30,9 @@ public class BeePlayerData
 
     public int preventGrabs;
     public bool isFlying;
+    public bool CDPOS;
+    public bool CDMET;
+    public Vector2 polepos;
     public float wingStamina;
     public int wingStaminaRecoveryCooldown;
     public int currentFlightDuration;
@@ -160,6 +163,8 @@ public class BeePlayerData
         currentFlightDuration = 0;
         timeSinceLastFlight = 0;
         isFlying = false;
+        CDMET = false;
+        CDPOS = false;
     }
 
     public void InitiateFlight()
@@ -170,6 +175,7 @@ public class BeePlayerData
         currentFlightDuration = 0;
         timeSinceLastFlight = 0;
         isFlying = true;
+        polepos = Vector2.zero;
     }
 
     public bool CanSustainFlight()
