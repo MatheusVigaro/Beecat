@@ -83,10 +83,10 @@ public class BupHook
     public void ApplyMyHooks()
     {
         On.Player.Update += BupsAI;
-        IL.HUD.FoodMeter.ctor += FoodMeter_ctor;
+        IL.HUD.FoodMeter.ctor += BupsFood;
     }
 
-    private void FoodMeter_ctor(ILContext il)
+    private void BupsFood(ILContext il)
     {
         var cursor = new ILCursor(il);
 
