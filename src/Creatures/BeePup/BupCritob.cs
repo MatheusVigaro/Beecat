@@ -3,6 +3,7 @@ using DevInterface;
 using Fisobs.Core;
 using Fisobs.Creatures;
 using Fisobs.Sandbox;
+using HUD;
 using MoreSlugcats;
 using SlugBase.DataTypes;
 using UnityEngine.Rendering;
@@ -14,6 +15,7 @@ public class BupCritob : Critob
     public BupCritob() : base(BeeEnums.CreatureType.Bup)
     {
         Icon = new SimpleIcon("Kill_Slugcat", new Color(1, 0.8117647058823529f, 0.050980392156862744f));
+        ShelterDanger = ShelterDanger.Safe;
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new SandboxPerformanceCost(0.5f, 0.5f);
         RegisterUnlock(KillScore.Configurable(6), BeeEnums.SandboxUnlockID.Bup);
@@ -81,7 +83,29 @@ public class BupHook
     public void ApplyMyHooks()
     {
         On.Player.Update += BupsAI;
+        IL.HUD.FoodMeter.ctor += FoodMeter_ctor;
     }
+
+    private void FoodMeter_ctor(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        var loc = 0;
+        cursor.GotoNext(MoveType.After,
+            i => i.MatchLdloc(out loc),
+            i => i.MatchCallOrCallvirt(out _),
+            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
+            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
+            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
+            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Equality")));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.Emit(OpCodes.Ldloc, loc);
+        cursor.EmitDelegate((FoodMeter self, int i) => ((Player)self.hud.owner).abstractCreature.Room.creatures[i].creatureTemplate.type == BeeEnums.CreatureType.Bup);
+        cursor.Emit(OpCodes.Or);
+    }
+
     private void BupsAI(On.Player.orig_Update orig, Player self, bool eu)
     {
         orig(self, eu);
