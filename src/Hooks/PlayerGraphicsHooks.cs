@@ -36,7 +36,6 @@ public static class PlayerGraphicsHooks
                 for (var j = 0; j < 2; j++)
                 {
                     var sprite = sLeaser.sprites[bee.WingSprite(i, j)];
-                    sprite.RemoveFromContainer();
                     newContatiner.AddChild(sprite);
                     sprite.MoveBehindOtherNode(sLeaser.sprites[0]);
                 }
@@ -46,22 +45,18 @@ public static class PlayerGraphicsHooks
             sLeaser.sprites[2].MoveBehindOtherNode(sLeaser.sprites[1]);
             
             //-- Stinger go behind tail
-            sLeaser.sprites[bee.stingerSprite].RemoveFromContainer();
             newContatiner.AddChild(sLeaser.sprites[bee.stingerSprite]);
             sLeaser.sprites[bee.stingerSprite].MoveBehindOtherNode(sLeaser.sprites[2]);
 
             //-- Antennae in front of face
-            sLeaser.sprites[bee.antennaeSprite].RemoveFromContainer();
             newContatiner.AddChild(sLeaser.sprites[bee.antennaeSprite]);
-            sLeaser.sprites[bee.antennaeSprite].MoveInFrontOfOtherNode(sLeaser.sprites[9]);
+            sLeaser.sprites[bee.antennaeSprite].MoveBehindOtherNode(sLeaser.sprites[9]);
             
             //-- Floof behind face
-            sLeaser.sprites[bee.floofSprite].RemoveFromContainer();
             newContatiner.AddChild(sLeaser.sprites[bee.floofSprite]);
             sLeaser.sprites[bee.floofSprite].MoveBehindOtherNode(sLeaser.sprites[9]);
 
             //-- Stamina HUD
-            sLeaser.sprites[bee.staminaSprite].RemoveFromContainer();
             hud2Container.AddChild(sLeaser.sprites[bee.staminaSprite]);
         }
     }
@@ -328,10 +323,11 @@ public static class PlayerGraphicsHooks
 
         //-- Antennae stuff
 
+        var baseHeadName = bee.IsBup ? "HeadC" : "HeadA";
         var headSpriteName = sLeaser.sprites[3].element.name;
-        if (!string.IsNullOrWhiteSpace(headSpriteName) && headSpriteName.Contains("HeadA"))
+        if (!string.IsNullOrWhiteSpace(headSpriteName) && headSpriteName.Contains(baseHeadName))
         {
-            var headSpriteNumber = headSpriteName.Substring(headSpriteName.LastIndexOf("HeadA", StringComparison.InvariantCultureIgnoreCase)+5);
+            var headSpriteNumber = headSpriteName.Substring(headSpriteName.LastIndexOf(baseHeadName, StringComparison.InvariantCultureIgnoreCase)+5);
 
             var antennaeOffsetX = 0f;
             var antennaeOffsetY = 0f;
