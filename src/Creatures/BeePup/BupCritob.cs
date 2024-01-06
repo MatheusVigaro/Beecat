@@ -127,12 +127,9 @@ public class BupHook
                     }
                     if (Creaturenearby != null && Creaturenearby.graphicsModule != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
                     {
-                        self.Bee().StingerAttack(new Vector2(60 * self.flipDirection, 20), new Vector2(20 * self.flipDirection, 20));
+                        var dir = Custom.DirVec(self.bodyChunks[1].pos, Creaturenearby.mainBodyChunk.pos);
+                        self.Bee().StingerAttack(new Vector2(60, 20) * dir , new Vector2(20, 20) * dir);
                     }
-
-
-
-                        
 
                     // -- fly
                     if (self.Bee().isFlying)
