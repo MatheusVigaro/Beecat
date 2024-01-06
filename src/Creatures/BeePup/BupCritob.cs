@@ -144,6 +144,7 @@ public class BupHook
 
                     if (nearbyBee != null && nearbyBee.graphicsModule != null)
                     {
+                        nearbyBee.Hypothermia -= nearbyBee.HypothermiaGain * 0.75f;
                         self.Hypothermia -= self.HypothermiaGain * 0.75f;
                     }
                 }
