@@ -114,26 +114,6 @@ public class BupHook
         {
             if (self.Template.type.value == "Bup")
             {
-                if(DRAGGER_COUNT)
-                {
-                    self.Hypothermia -= self.HypothermiaGain * 0.75f;
-                    self.Hypothermia -= (self.input[0].y < 0 && self.bodyMode == Player.BodyModeIndex.Crawl) ? 0.005f : 0f;
-                    Player nearbyBee = null;
-                    foreach (var otherPlayer in self.room.updateList.OfType<Player>())
-                    {
-                        if (otherPlayer.slugcatStats.name.value == "SnowFlakeCat" && Custom.DistLess(self.bodyChunks[0].pos, otherPlayer.bodyChunks[0].pos, otherPlayer.bodyChunks[0].rad + 40))
-                        {
-                            nearbyBee = otherPlayer;
-                            break;
-                        }
-                    }
-
-                    if (nearbyBee != null && nearbyBee.graphicsModule != null)
-                    {
-                        self.Hypothermia -= self.HypothermiaGain * 0.75f;
-                    }
-                }
-
                 // -- normal bups
                 Creature Creaturenearby = null;
                 foreach (var otherPlayers in self.room.updateList.OfType<Creature>())
