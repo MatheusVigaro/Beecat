@@ -84,6 +84,7 @@ public class BupHook
     {
         On.Player.Update += BupsAI;
         IL.HUD.FoodMeter.ctor += BupsFood;
+        // more il hook soon to work as a slugpup 
     }
 
     private void BupsFood(ILContext il)
@@ -109,82 +110,101 @@ public class BupHook
     private void BupsAI(On.Player.orig_Update orig, Player self, bool eu)
     {
         orig(self, eu);
-        if (self.isNPC)
+        if (self.isNPC && self.room != null)
         {
             if (self.Template.type.value == "Bup")
             {
-
-                Creature Creaturenearby = null;
-                if(self.room != null)
+                if(DRAGGER_COUNT)
                 {
-                    foreach (var otherPlayers in self.room.updateList.OfType<Creature>())
+                    self.Hypothermia -= self.HypothermiaGain * 0.75f;
+                    self.Hypothermia -= (self.input[0].y < 0 && self.bodyMode == Player.BodyModeIndex.Crawl) ? 0.005f : 0f;
+                    Player nearbyBee = null;
+                    foreach (var otherPlayer in self.room.updateList.OfType<Player>())
                     {
-                        if (otherPlayers is not Player && !otherPlayers.Template.smallCreature && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 20))
+                        if (otherPlayer.slugcatStats.name.value == "SnowFlakeCat" && Custom.DistLess(self.bodyChunks[0].pos, otherPlayer.bodyChunks[0].pos, otherPlayer.bodyChunks[0].rad + 40))
                         {
-                            Creaturenearby = otherPlayers;
+                            nearbyBee = otherPlayer;
                             break;
                         }
                     }
-                    if (Creaturenearby != null && Creaturenearby.graphicsModule != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
+
+                    if (nearbyBee != null && nearbyBee.graphicsModule != null)
                     {
-                        var dir = Custom.DirVec(self.bodyChunks[1].pos, Creaturenearby.mainBodyChunk.pos);
-                        self.Bee().StingerAttack(new Vector2(60, 20) * dir , new Vector2(20, 20) * dir);
+                        self.Hypothermia -= self.HypothermiaGain * 0.75f;
+                    }
+                }
+
+                // -- normal bups
+                Creature Creaturenearby = null;
+                foreach (var otherPlayers in self.room.updateList.OfType<Creature>())
+                {
+                    if (otherPlayers is not Player && !otherPlayers.Template.smallCreature && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 20))
+                    {
+                        Creaturenearby = otherPlayers;
+                        break;
+                    }
+                }
+                if (Creaturenearby != null && Creaturenearby.graphicsModule != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
+                {
+                    var dir = Custom.DirVec(self.bodyChunks[1].pos, Creaturenearby.mainBodyChunk.pos);
+                    self.Bee().StingerAttack(new Vector2(60, 20) * dir , new Vector2(20, 20) * dir);
+                }
+
+
+                // -- fly
+                if (self.Bee().isFlying)
+                {
+                    if(self.room.GetTile(new Vector2(self.bodyChunks[0].pos.y)).AnyBeam) //temporary, not sure if theyll fall off beam before they can climb up
+                    {
+                       self.Bee().StopFlight();
+                        return;
+                    }
+                    for (int i = 0; i <= 100; i += 10)
+                    {
+                        if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Solid || self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Floor)
+                        {
+                            self.Bee().StopFlight();
+                            return; 
+                        }
                     }
 
-                    // -- fly
-                    if (self.Bee().isFlying)
+
+                    // -- finding poles left right by 1 tiles  
+                    if (self.Bee().CDMET)
                     {
-                        for (int i = 0; i <= 100; i += 10)
+                        self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
+                    }
+                    else
+                    {
+                        for (int i = 0; i <= self.Bee().wingStamina; i += 10)
                         {
-                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Solid || self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Floor)
+                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y)).AnyBeam)
                             {
-                                self.Bee().StopFlight();
+                                self.Bee().polepos = new Vector2(-i, 0);
+                                self.Bee().CDMET = true;
                                 return;
                             }
                         }
-                        if (self.Bee().CDMET)
+                        for (int i = 0; i <= self.Bee().wingStamina; i += 10)
                         {
-                            self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
-                        }
-                        else
-                        {
-                            for (int i = 0; i <= 100; i += 10)
+                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y)).AnyBeam)
                             {
-                                if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y)).AnyBeam)
-                                {
-                                    self.Bee().polepos = new Vector2(-i, 0);
-                                    self.Bee().CDMET = true;
-                                    return;
-                                }
-                            }
-
-                            // If the condition is not met in the negative direction
-                            if (!self.Bee().CDMET)
-                            {
-                                for (int i = 0; i <= 100; i += 10)
-                                {
-                                    if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y)).AnyBeam)
-                                    {
-                                        self.Bee().polepos = new Vector2(i, 0);
-                                        self.Bee().CDMET = true;
-                                        return;
-                                    }
-                                }
+                                self.Bee().polepos = new Vector2(i, 0);
+                                self.Bee().CDMET = true;
+                                return;
                             }
                         }
                     }
-                    else 
+                else 
+                {
+                    if (self.bodyChunks[0].vel.y <= -10 && self.onBack == null)
                     {
-                        if (self.bodyChunks[0].vel.y <= -10 && self.onBack == null)
-                        {
-                            self.Bee().isFlying = true;
-                        }
-                        if (self.input[0].jmp)
-                        {
-                            self.Bee().isFlying = !self.Bee().isFlying;
-                        }
+                        self.Bee().isFlying = true;
                     }
-
+                    if (self.input[0].jmp)
+                    {
+                        self.Bee().isFlying = !self.Bee().isFlying;
+                    }
                 }
             }
         }

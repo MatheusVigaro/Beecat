@@ -32,6 +32,7 @@ public class BeePlayerData
     public bool isFlying;
     public bool CDPOS;
     public bool CDMET;
+    public bool DRAGGER_COUNT;
     public Vector2 polepos;
     public float wingStamina;
     public int wingStaminaRecoveryCooldown;
@@ -145,6 +146,7 @@ public class BeePlayerData
         int wa = Random.Range(0, 100);
         if (IsBup && wa >= 99) // DO NOT MODIFY THIS TO CHECK PWEASE :monkplead:.
         {
+            DRAGGER_COUNT = true;
             BodyColor = pg.GetColor(BeeEnums.Color.Body) ?? Custom.hexToColor("FFF3E5");
             EyesColor = pg.GetColor(BeeEnums.Color.Eyes) ?? Custom.hexToColor("010101");
             WingColor = pg.GetColor(BeeEnums.Color.Wings) ?? Color.white;
