@@ -54,7 +54,7 @@ public class BupCritob : Critob
         cf.meatPoints = 6;
         cf.visualRadius = 1500;
         cf.waterVision = 0.3f;
-        cf.stowFoodInDen = true;
+        cf.stowFoodInDen = true;   
         cf.throughSurfaceVision = 0.5f;
         cf.movementBasedVision = 0.5f;
         cf.communityInfluence = 0.1f;
@@ -110,13 +110,14 @@ public class BupHook
     private void BupsAI(On.Player.orig_Update orig, Player self, bool eu)
     {
         orig(self, eu);
-        if (self.isNPC && self.room != null)
+        if (self.isNPC && self.room != null && self.AI != null)
         {
             // >non-nullable type
             // >looks inside
             // >NullReferenceExepction
             if (self.Template.type.value == "Bup")
             {
+                var ai = self.AI;
 
                 // -- normal bups
                 Creature Creaturenearby = null;
@@ -128,12 +129,28 @@ public class BupHook
                         break;
                     }
                 }
-                if (Creaturenearby != null && Creaturenearby.graphicsModule != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
+                if (Creaturenearby != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
                 {
+                    ai.abstractAI.Moved(); //RUN AWAY AFTER STING
+                    ai.nap = true;
                     var dir = Custom.DirVec(self.bodyChunks[1].pos, Creaturenearby.mainBodyChunk.pos);
                     self.Bee().StingerAttack(new Vector2(60, 20) * dir , new Vector2(20, 20) * dir);
                 }
 
+                // -- please do not look, spoilers for secret mod. || It is used for debugging follow test
+                Player Snowflake = null;
+                foreach (var otherPlayers in self.room.updateList.OfType<Player>())
+                {
+                    if (self.Bee().DRAGGER_COUNT && otherPlayers.slugcatStats.name.value == "SnowflakeCat" && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 500))
+                    {
+                        Snowflake = otherPlayers;
+                        break;
+                    }
+                }
+                if (Snowflake != null)
+                {
+                    ai.abstractAI.SetDestination(Snowflake.abstractCreature.pos);
+                }
 
                 // -- fly
                 if (self.Bee().isFlying)
@@ -141,7 +158,7 @@ public class BupHook
                     if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.y, self.bodyChunks[0].pos.x)).AnyBeam) //temporary, not sure if theyll fall off beam before they can climb up
                     {
                         self.Bee().StopFlight();
-                        return;
+                        return; 
                     }
                     for (int i = 0; i <= 100; i += 10)
                     {
@@ -150,6 +167,13 @@ public class BupHook
                             self.Bee().StopFlight();
                             return;
                         }
+                        else if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + (self.flipDirection * 20), self.bodyChunks[0].pos.y - i + 70)).Terrain == Room.Tile.TerrainType.Solid &&
+                             self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + (self.flipDirection * 20), self.bodyChunks[0].pos.y - i + 90)).Terrain == Room.Tile.TerrainType.Air)
+                        {
+                            self.Bee().StopFlight();
+                            return;
+                        }
+
                     }
 
 
