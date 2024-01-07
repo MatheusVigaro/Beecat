@@ -90,7 +90,7 @@ public static class PlayerFlightHooks
 
                 if (self.isNPC)
                 {
-                    if (!bee.CanSustainFlight() self.onBack != null)
+                    if (!bee.CanSustainFlight() || self.onBack != null)
                     {
                         bee.StopFlight();
                     }

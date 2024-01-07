@@ -69,6 +69,7 @@ public class Plugin : BaseUnityPlugin
             PlayerFlightHooks.Apply();
             PlayerCombatHooks.Apply();
             PlayerGraphicsHooks.Apply();
+            BupHooks.Apply();
             //RoomHooks.Init();
             //SaveDataHooks.Init();
             //WorldHooks.Init();
