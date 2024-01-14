@@ -4,9 +4,9 @@ using Fisobs.Core;
 using Fisobs.Creatures;
 using Fisobs.Sandbox;
 using HUD;
+using MonoMod.RuntimeDetour;
 using MoreSlugcats;
-using SlugBase.DataTypes;
-using UnityEngine.Rendering;
+using VoidSea;
 
 namespace BeeWorld;
 
@@ -19,8 +19,7 @@ public class BupCritob : Critob
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new SandboxPerformanceCost(0.5f, 0.5f);
         RegisterUnlock(KillScore.Configurable(6), BeeEnums.SandboxUnlockID.Bup);
-        BupHook hooks = new BupHook();
-        hooks.ApplyMyHooks();
+        BupHook.Apply();
     }
 
     public override int ExpeditionScore() => 6;
@@ -78,16 +77,179 @@ public class BupCritob : Critob
     }
 }
 
-public class BupHook
+public static class BupHook
 {
-    public void ApplyMyHooks()
+    public static void Apply()
     {
         On.Player.Update += BupsAI;
         IL.HUD.FoodMeter.ctor += BupsFood;
-        // more il hook soon to work as a slugpup 
+        IL.VoidSea.VoidSeaScene.Update += VoidSeaScene_Update;
+        IL.GhostCreatureSedater.Update += GhostCreatureSedater_Update;
+        On.OracleBehavior.CheckSlugpupsInRoom += OracleBehavior_CheckSlugpupsInRoom;
+        IL.OracleBehavior.CheckStrayCreatureInRoom += OracleBehavior_CheckStrayCreatureInRoom;
+        On.Player.SlugSlamConditions += Player_SlugSlamConditions;
+        On.SaveState.SessionEnded += SaveState_SessionEnded;
+        IL.ShelterDoor.Update += ShelterDoor_Update;
+        IL.World.SpawnPupNPCs += World_SpawnPupNPCs;
+        _ = new Hook(typeof(StoryGameSession).GetProperty(nameof(StoryGameSession.slugPupMaxCount))!.GetGetMethod(), StoryGameSession_slugPupMaxCount_get);
     }
 
-    private void BupsFood(ILContext il)
+    private static int StoryGameSession_slugPupMaxCount_get(Func<StoryGameSession, int> orig, StoryGameSession self)
+    {
+        return Math.Max(orig(self), self.saveStateNumber == BeeEnums.Beecat ? 2 : 0);
+    }
+
+    private static void World_SpawnPupNPCs(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        var loc = -1;
+        cursor.GotoNext(MoveType.After,
+            i => i.MatchLdloc(out loc),
+            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
+            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
+            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
+            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Equality")));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldloc, loc);
+        cursor.EmitDelegate((AbstractCreature crit) => crit.creatureTemplate.type == BeeEnums.CreatureType.Bup);
+        cursor.Emit(OpCodes.Or);
+
+        cursor.GotoNext(MoveType.After, i => i.MatchCallOrCallvirt(typeof(StaticWorld).GetMethod(nameof(StaticWorld.GetCreatureTemplate), [typeof(CreatureTemplate.Type)])));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.EmitDelegate((CreatureTemplate old, World self) => self.game.session is StoryGameSession session && session.saveStateNumber == BeeEnums.Beecat ? StaticWorld.GetCreatureTemplate(BeeEnums.CreatureType.Bup) : old);
+    }
+
+    private static void ShelterDoor_Update(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        var loc = -1;
+        cursor.GotoNext(MoveType.After,
+            i => i.MatchLdloc(out loc),
+            i => i.MatchCallOrCallvirt(out _),
+            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
+            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
+            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
+            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Inequality")));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.Emit(OpCodes.Ldloc, loc);
+        cursor.EmitDelegate((ShelterDoor self, int i) => self.room.abstractRoom.creatures[i].creatureTemplate.type != BeeEnums.CreatureType.Bup);
+        cursor.Emit(OpCodes.And);
+    }
+
+    private static void SaveState_SessionEnded(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
+    {
+		for (var j = 0; j < game.GetStorySession.playerSessionRecords.Length; j++)
+		{
+			if (game.GetStorySession.playerSessionRecords[j] == null || (ModManager.CoopAvailable && game.world.GetAbstractRoom(game.Players[j].pos) == null))
+			{
+				continue;
+			}
+			game.GetStorySession.playerSessionRecords[j].pupCountInDen = 0;
+			var flag = false;
+			game.GetStorySession.playerSessionRecords[j].wentToSleepInRegion = game.world.region.name;
+			foreach (var crit in game.world.GetAbstractRoom(game.Players[j].pos).creatures)
+            {
+                if (!crit.state.alive || crit.state.socialMemory == null || crit.realizedCreature == null || crit.abstractAI?.RealAI?.friendTracker?.friend == null || crit.abstractAI.RealAI.friendTracker.friend != game.Players[j].realizedCreature || !(crit.state.socialMemory.GetLike(game.Players[j].ID) > 0f))
+                {
+                    continue;
+                }
+                if (ModManager.MSC && crit.creatureTemplate.type == BeeEnums.CreatureType.Bup && crit.state is PlayerNPCState state)
+                {
+                    if (state.foodInStomach - (state.Malnourished ? SlugcatStats.SlugcatFoodMeter(MoreSlugcatsEnums.SlugcatStatsName.Slugpup).x : SlugcatStats.SlugcatFoodMeter(MoreSlugcatsEnums.SlugcatStatsName.Slugpup).y) >= 0)
+                    {
+                        game.GetStorySession.playerSessionRecords[j].pupCountInDen++;
+                    }
+                }
+                else if (!flag)
+                {
+                    flag = true;
+                    game.GetStorySession.playerSessionRecords[j].friendInDen = crit;
+                    var orInitiateRelationship = crit.state.socialMemory.GetOrInitiateRelationship(game.Players[j].ID);
+                    orInitiateRelationship.like = Mathf.Lerp(orInitiateRelationship.like, 1f, 0.5f);
+                }
+            }
+		}
+        
+        orig(self, game, survived, newMalnourished);
+    }
+
+    private static bool Player_SlugSlamConditions(On.Player.orig_SlugSlamConditions orig, Player self, PhysicalObject otherObject)
+    {
+        return orig(self, otherObject) && !(otherObject is Creature crit && crit.abstractCreature.creatureTemplate.type == MoreSlugcatsEnums.CreatureTemplateType.SlugNPC);
+    }
+
+    private static void OracleBehavior_CheckStrayCreatureInRoom(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        var loc = -1;
+        cursor.GotoNext(MoveType.After,
+            i => i.MatchLdloc(out loc),
+            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
+            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
+            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
+            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Inequality")));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldloc, loc);
+        cursor.EmitDelegate((AbstractCreature crit) => crit.creatureTemplate.type != BeeEnums.CreatureType.Bup);
+        cursor.Emit(OpCodes.And);
+    }
+
+
+    private static bool OracleBehavior_CheckSlugpupsInRoom(On.OracleBehavior.orig_CheckSlugpupsInRoom orig, OracleBehavior self)
+    {
+        return orig(self) || self.oracle.room.abstractRoom.creatures.Any(creature => creature.creatureTemplate.type == BeeEnums.CreatureType.Bup && creature.state.alive);
+    }
+
+    private static void GhostCreatureSedater_Update(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        var loc = -1;
+        cursor.GotoNext(MoveType.After,
+            i => i.MatchLdloc(out loc),
+            i => i.MatchCallOrCallvirt(out _),
+            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
+            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
+            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
+            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Inequality")));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.Emit(OpCodes.Ldloc, loc);
+        cursor.EmitDelegate((GhostCreatureSedater self, int i) => self.room.abstractRoom.creatures[i].creatureTemplate.type != BeeEnums.CreatureType.Bup);
+        cursor.Emit(OpCodes.And);
+    }
+
+    private static void VoidSeaScene_Update(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        var loc = -1;
+        cursor.GotoNext(MoveType.After,
+            i => i.MatchLdloc(out loc),
+            i => i.MatchCallOrCallvirt(out _),
+            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
+            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
+            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
+            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Equality")));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldarg_0);
+        cursor.Emit(OpCodes.Ldloc, loc);
+        cursor.EmitDelegate((VoidSeaScene self, int i) => self.room.abstractRoom.creatures[i].creatureTemplate.type == BeeEnums.CreatureType.Bup);
+        cursor.Emit(OpCodes.Or);
+    }
+
+    private static void BupsFood(ILContext il)
     {
         var cursor = new ILCursor(il);
 
@@ -107,7 +269,7 @@ public class BupHook
         cursor.Emit(OpCodes.Or);
     }
 
-    private void BupsAI(On.Player.orig_Update orig, Player self, bool eu)
+    private static void BupsAI(On.Player.orig_Update orig, Player self, bool eu)
     {
         orig(self, eu);
         if (self.isNPC && self.room != null && self.AI != null)
