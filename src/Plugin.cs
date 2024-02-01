@@ -4,6 +4,7 @@ using System.Security;
 using BeeWorld.Hooks;
 using System.IO;
 using Fisobs.Core;
+using wa;
 
 [module: UnverifiableCode]
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -52,6 +53,7 @@ public class Plugin : BaseUnityPlugin
             Futile.atlasManager.LoadAtlas("atlases/floof");
             Futile.atlasManager.LoadAtlas("atlases/floof2");
             Futile.atlasManager.LoadAtlas("atlases/beecathands");
+            Futile.atlasManager.LoadAtlas("atlases/HoneyComb");
             Futile.atlasManager.LoadImage("atlases/beecatstinger");
 
             TailTexture = new Texture2D(150, 75, TextureFormat.ARGB32, false);
@@ -75,6 +77,7 @@ public class Plugin : BaseUnityPlugin
             //WorldHooks.Init();
 
             //Content.Register(new FlowerFisob());
+            Content.Register(new HoneyCombFisob());
 
             if (ModManager.MSC)
             {

@@ -6,6 +6,7 @@ namespace BeeWorld;
 public static class BeeEnums
 {
     public static SlugcatStats.Name Beecat = new("bee");
+    public static SlugcatStats.Name SnowFlake = new("SnowflakeCat");
     public static class Sound
     {
         public static SoundID BeeBuzz;
