@@ -131,11 +131,11 @@ public class HoneyCombT : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public int BitesLeft => bites;
 
-    public int FoodPoints => 3; // how do i change this for snowflake :snowplead:
+    public int FoodPoints => 3;
 
     public bool Edible => true;
 
-    public bool AutomaticPickUp => true; // same as well
+    public bool AutomaticPickUp => true;
 
     public void AddToContainer(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContatiner)
     {
@@ -184,8 +184,10 @@ public class HoneyCombT : PlayerCarryableItem, IDrawable, IPlayerEdible
     public void InitiateSprites(RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam)
     {
         sLeaser.sprites = new FSprite[1];
-        sLeaser.sprites[0] = new FSprite("HC1", true);
-        sLeaser.sprites[0].scale = 3;
+        sLeaser.sprites[0] = new FSprite("HC1", true)
+        {
+            scale = 3
+        };
         AddToContainer(sLeaser, rCam, rCam.ReturnFContainer("Items"));
     }
 
@@ -199,7 +201,6 @@ public class HoneyCombT : PlayerCarryableItem, IDrawable, IPlayerEdible
     public override void Update(bool eu)
     {
         base.Update(eu);
-        Debug.Log(bites);
         if (room.game.devToolsActive && Input.GetKey("b"))
         {
             base.firstChunk.vel += Custom.DirVec(base.firstChunk.pos, Futile.mousePosition) * 3f;
@@ -219,7 +220,7 @@ public class HoneyCombT : PlayerCarryableItem, IDrawable, IPlayerEdible
         {
             rotation = (rotation - Custom.PerpendicularVector(rotation) * 0.1f * base.firstChunk.vel.x).normalized;
             BodyChunk firstChunk = base.firstChunk;
-            firstChunk.vel.x = firstChunk.vel.x * 0.8f;
+            firstChunk.vel.x *= 0.8f;
         }
     }
 }
