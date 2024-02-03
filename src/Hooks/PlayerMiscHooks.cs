@@ -12,6 +12,7 @@ public static class PlayerMiscHooks
         On.Player.Grabability += Player_Grabability;
         On.Player.DeathByBiteMultiplier += Player_DeathByBiteMultiplier;
         On.Menu.SlugcatSelectMenu.UpdateStartButtonText += NULL;
+        On.Menu.SlugcatSelectMenu.CheckJollyCoopAvailable += SlugcatSelectMenu_CheckJollyCoopAvailable;
         On.Player.Update += Player_Update;
         On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
 
@@ -44,6 +45,16 @@ public static class PlayerMiscHooks
     }
 
     #region his code is mess
+    private static bool SlugcatSelectMenu_CheckJollyCoopAvailable(On.Menu.SlugcatSelectMenu.orig_CheckJollyCoopAvailable orig, SlugcatSelectMenu self, SlugcatStats.Name slugcat)
+    {
+        var result = orig(self, slugcat);
+        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.SnowFlake)
+        {
+            return false;
+        }
+        return result;
+    }
+
     private static void PlayerGraphics_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
     {
         orig(self, sLeaser, rCam, timeStacker, camPos);
@@ -79,7 +90,7 @@ public static class PlayerMiscHooks
             self.startButton.menuLabel.text = "? ? ?";
             if (self.slugcatPages[self.slugcatPageIndex] is SlugcatSelectMenu.SlugcatPageNewGame page)
             {
-                int wa = Random.Range(0, 25);
+                int wa = Random.Range(0, 25);   
                 if (wa <= 3)
                 {
                     page.difficultyLabel.text = "???";
