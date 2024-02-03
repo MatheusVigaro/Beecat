@@ -294,7 +294,7 @@ public static class BupHook
                 if (Creaturenearby != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
                 {
                     ai.abstractAI.Moved(); //RUN AWAY AFTER STING
-                    ai.nap = true;
+                    ai.nap = true; // nvm go sleep
                     var dir = Custom.DirVec(self.bodyChunks[1].pos, Creaturenearby.mainBodyChunk.pos);
                     self.Bee().StingerAttack(new Vector2(60, 20) * dir , new Vector2(20, 20) * dir);
                 }
@@ -303,7 +303,7 @@ public static class BupHook
                 Player Snowflake = null;
                 foreach (var otherPlayers in self.room.updateList.OfType<Player>())
                 {
-                    if (self.Bee().DRAGGER_COUNT && otherPlayers.slugcatStats.name.value == "SnowflakeCat" && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 500))
+                    if (self.Bee().DRAGGER_COUNT && otherPlayers.slugcatStats.name == BeeEnums.SnowFlake && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 500))
                     {
                         Snowflake = otherPlayers;
                         break;
@@ -342,7 +342,10 @@ public static class BupHook
                     // -- finding poles left right by 1 tiles  
                     if (self.Bee().CDMET)
                     {
-                        self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
+                        float wa = self.bodyChunks[0].pos.x - self.Bee().polepos.x;
+                        self.bodyChunks[0].vel.x += (wa <= 0) ? 1 : -1;
+                        //self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
+                        ai.abstractAI.SetDestination(self.abstractCreature.pos);    
                     }
                     else
                     {
@@ -350,16 +353,13 @@ public static class BupHook
                         {
                             if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y)).AnyBeam)
                             {
-                                self.Bee().polepos = new Vector2(-i, 0);
+                                self.Bee().polepos = new Vector2(self.bodyChunks[0].pos.x - i - 10, 0);
                                 self.Bee().CDMET = true;
                                 return;
                             }
-                        }
-                        for (int i = 0; i <= self.Bee().wingStamina; i += 10)
-                        {
-                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y)).AnyBeam)
+                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i + 5, self.bodyChunks[0].pos.y)).AnyBeam)
                             {
-                                self.Bee().polepos = new Vector2(i, 0);
+                                self.Bee().polepos = new Vector2(self.bodyChunks[0].pos.x+i + 17, 0);
                                 self.Bee().CDMET = true;
                                 return;
                             }
@@ -372,7 +372,7 @@ public static class BupHook
                     {
                         self.Bee().isFlying = true;
                     }
-                    if (self.input[0].jmp)
+                    if (self.input[0].jmp && self.Bee().CanFly)
                     {
                         self.Bee().isFlying = !self.Bee().isFlying;
                     }

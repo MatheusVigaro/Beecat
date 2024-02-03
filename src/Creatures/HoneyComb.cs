@@ -186,7 +186,7 @@ public class HoneyCombT : PlayerCarryableItem, IDrawable, IPlayerEdible
         sLeaser.sprites = new FSprite[1];
         sLeaser.sprites[0] = new FSprite("HC1", true)
         {
-            scale = 3
+            scale = 1.5f // how tf slugcat eat honeycomb after beecat spit out honeycomb few minutes ago-
         };
         AddToContainer(sLeaser, rCam, rCam.ReturnFContainer("Items"));
     }

@@ -1,5 +1,7 @@
 ﻿using BeeWorld.Extensions;
 using Menu;
+using wa;
+using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 namespace BeeWorld.Hooks;
 
@@ -11,6 +13,9 @@ public static class PlayerMiscHooks
         On.Player.CanBeSwallowed += Player_CanBeSwallowed;
         On.Player.Grabability += Player_Grabability;
         On.Player.DeathByBiteMultiplier += Player_DeathByBiteMultiplier;
+        On.Player.checkInput += Player_checkInput;
+
+
         On.Menu.SlugcatSelectMenu.UpdateStartButtonText += NULL;
         On.Menu.SlugcatSelectMenu.CheckJollyCoopAvailable += SlugcatSelectMenu_CheckJollyCoopAvailable;
         On.Player.Update += Player_Update;
@@ -44,11 +49,43 @@ public static class PlayerMiscHooks
         #endregion
     }
 
+    private static void Player_checkInput(On.Player.orig_checkInput orig, Player self)
+    {
+        orig(self);
+        
+        if (!self.IsBee(out var bee)) return;
+
+        if (bee.nom >= 0) bee.nom--;
+        if (bee.bleh >= 0) bee.bleh--;
+        if (self.FreeHand() != -1 && bee.bleh <=0 && self.CurrentFood >= 3)
+        {
+            if (bee.nom >= 10)
+            {
+                self.Blink(15);
+            }
+            if (bee.nom >= 50)
+            {
+                var wa = new AbstractHoneyComb(self.room.world, self.abstractCreature.pos, self.room.game.GetNewID());
+                self.room.abstractRoom.AddEntity(wa);
+                wa.RealizeInRoom();
+                self.SlugcatGrab(wa.realizedObject, self.FreeHand());
+                bee.nom = 0;
+                bee.bleh = 500;
+                self.SubtractFood(3);
+            }
+            if (self.input[0].pckp)
+            {
+                bee.nom += 2;
+            }
+        }
+        
+    }
+
     #region his code is mess
     private static bool SlugcatSelectMenu_CheckJollyCoopAvailable(On.Menu.SlugcatSelectMenu.orig_CheckJollyCoopAvailable orig, SlugcatSelectMenu self, SlugcatStats.Name slugcat)
     {
         var result = orig(self, slugcat);
-        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.SnowFlake)
+        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.Secret)
         {
             return false;
         }
@@ -60,7 +97,7 @@ public static class PlayerMiscHooks
         orig(self, sLeaser, rCam, timeStacker, camPos);
         if(self.owner is Player PL)
         {
-            if (PL.slugcatStats.name ==  BeeEnums.SnowFlake)
+            if (PL.slugcatStats.name == BeeEnums.Secret)
             {
                 for (var i = 0; i < sLeaser.sprites.Length; i++)
                 {
@@ -76,7 +113,7 @@ public static class PlayerMiscHooks
     private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
     {
         orig(self, eu);
-        if (self.slugcatStats.name == BeeEnums.SnowFlake)
+        if (self.slugcatStats.name == BeeEnums.Secret)
         {
             self.Die();
         }
@@ -84,7 +121,7 @@ public static class PlayerMiscHooks
     private static void NULL(On.Menu.SlugcatSelectMenu.orig_UpdateStartButtonText orig, Menu.SlugcatSelectMenu self)
     {
         orig(self);
-        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.SnowFlake)
+        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.Secret)
         {
             self.startButton.fillTime = 99999999999999999;
             self.startButton.menuLabel.text = "? ? ?";

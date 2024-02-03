@@ -2,43 +2,47 @@
 
 "HC0.png":
 {
-	"frame": {"x":0,"y":0,"w":20,"h":20},
+	"frame": {"x":0,"y":0,"w":4,"h":4},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
-	"sourceSize": {"w":20,"h":20}
+	"trimmed": true,
+	"spriteSourceSize": {"x":11,"y":11,"w":4,"h":4},
+	"sourceSize": {"w":20,"h":20},
+	"pivot": {"x":0.5,"y":0.5}
 },
 "HC1.png":
 {
-	"frame": {"x":20,"y":0,"w":20,"h":20},
+	"frame": {"x":4,"y":0,"w":10,"h":11},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
-	"sourceSize": {"w":20,"h":20}
+	"trimmed": true,
+	"spriteSourceSize": {"x":7,"y":7,"w":10,"h":11},
+	"sourceSize": {"w":20,"h":20},
+	"pivot": {"x":0.5,"y":0.5}
 },
 "HC2.png":
 {
-	"frame": {"x":40,"y":0,"w":20,"h":20},
+	"frame": {"x":14,"y":0,"w":15,"h":13},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
-	"sourceSize": {"w":20,"h":20}
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":5,"w":15,"h":13},
+	"sourceSize": {"w":20,"h":20},
+	"pivot": {"x":0.5,"y":0.5}
 },
 "HC3.png":
 {
-	"frame": {"x":60,"y":0,"w":20,"h":20},
+	"frame": {"x":0,"y":13,"w":15,"h":17},
 	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
-	"sourceSize": {"w":20,"h":20}
+	"trimmed": true,
+	"spriteSourceSize": {"x":2,"y":1,"w":15,"h":17},
+	"sourceSize": {"w":20,"h":20},
+	"pivot": {"x":0.5,"y":0.5}
 }},
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
 	"image": "HoneyComb.png",
 	"format": "RGBA8888",
-	"size": {"w":80,"h":20},
+	"size": {"w":30,"h":30},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:1a5327b4cb67403f3c61c4c0335cca96:f46278ce613b66898394abb0547f3751:d3cb9cd927304d885b2711a3e4571e61$"
+	"smartupdate": "$TexturePacker:SmartUpdate:fc8edb2658eff5f8de800a4e8b7703f6:dfdde37e325a0000d6ef7ded3326b64b:d3cb9cd927304d885b2711a3e4571e61$"
 }
 }

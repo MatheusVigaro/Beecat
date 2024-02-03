@@ -34,6 +34,8 @@ public class BeePlayerData
     public bool CDMET;
     public bool DRAGGER_COUNT;
     public Vector2 polepos;
+    public int nom;
+    public int bleh;
     public float wingStamina;
     public int wingStaminaRecoveryCooldown;
     public int currentFlightDuration;
