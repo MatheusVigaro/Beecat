@@ -1,4 +1,5 @@
 ﻿using BeeWorld.Extensions;
+using Menu;
 
 namespace BeeWorld.Hooks;
 
@@ -10,6 +11,9 @@ public static class PlayerMiscHooks
         On.Player.CanBeSwallowed += Player_CanBeSwallowed;
         On.Player.Grabability += Player_Grabability;
         On.Player.DeathByBiteMultiplier += Player_DeathByBiteMultiplier;
+        On.Menu.SlugcatSelectMenu.UpdateStartButtonText += NULL;
+        On.Player.Update += Player_Update;
+        On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
 
         #region moon fix, not proud of this one
         On.PlayerGraphics.CosmeticPearl.Update += (orig, self) =>
@@ -38,6 +42,84 @@ public static class PlayerMiscHooks
         };
         #endregion
     }
+
+    #region his code is mess
+    private static void PlayerGraphics_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
+    {
+        orig(self, sLeaser, rCam, timeStacker, camPos);
+        if(self.owner is Player PL)
+        {
+            if (PL.slugcatStats.name ==  BeeEnums.SnowFlake)
+            {
+                for (var i = 0; i < sLeaser.sprites.Length; i++)
+                {
+                    if (i != 9)
+                    {
+                        sLeaser.sprites[i].isVisible = false;
+                    }
+                }
+            }
+        }    
+    }
+
+    private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
+    {
+        orig(self, eu);
+        if (self.slugcatStats.name == BeeEnums.SnowFlake)
+        {
+            self.Die();
+        }
+    }
+    private static void NULL(On.Menu.SlugcatSelectMenu.orig_UpdateStartButtonText orig, Menu.SlugcatSelectMenu self)
+    {
+        orig(self);
+        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.SnowFlake)
+        {
+            self.startButton.fillTime = 99999999999999999;
+            self.startButton.menuLabel.text = "? ? ?";
+            if (self.slugcatPages[self.slugcatPageIndex] is SlugcatSelectMenu.SlugcatPageNewGame page)
+            {
+                int wa = Random.Range(0, 25);
+                if (wa <= 3)
+                {
+                    page.difficultyLabel.text = "???";
+                }
+                else if(wa <= 5)
+                {
+                    page.difficultyLabel.text = "?? ?";
+                }
+                else if (wa <= 13)
+                {
+                    page.difficultyLabel.text = "ERROR";
+                }
+                else if (wa <= 10)
+                {
+                    page.difficultyLabel.text = "? ??";
+                }
+                else if (wa <= 13)
+                {
+                    page.difficultyLabel.text = "#E!P M3";
+                }
+                else if (wa <= 15)
+                {
+                    page.difficultyLabel.text = "NULL";
+                }
+                else if (wa <= 18)
+                {
+                    page.difficultyLabel.text = "Cryptic?!";
+                }
+                else if (wa <= 20)
+                {
+                    page.difficultyLabel.text = "? ? ?";
+                }
+                else if (wa <= 25)
+                {
+                    page.difficultyLabel.text = "$3CR37";
+                }
+            }
+        }
+    }
+    #endregion
 
     private static float Player_DeathByBiteMultiplier(On.Player.orig_DeathByBiteMultiplier orig, Player self)
     {
