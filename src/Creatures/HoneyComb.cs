@@ -132,7 +132,7 @@ public class HoneyCombT : PlayerCarryableItem, IDrawable, IPlayerEdible
 
     public int BitesLeft => bites;
 
-    public int FoodPoints => 3;
+    public int FoodPoints => 2;
 
     public bool Edible => true;
 
