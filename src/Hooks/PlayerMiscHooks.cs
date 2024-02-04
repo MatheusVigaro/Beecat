@@ -58,28 +58,33 @@ public static class PlayerMiscHooks
 
         if (bee.nom >= 0) bee.nom--;
         if (bee.bleh >= 0) bee.bleh--;
-        if (self.FreeHand() != -1 && bee.bleh <=0 && self.CurrentFood >= 3)
+        for (var i = 0; i < self.grasps.Length; i++)
         {
-            if (bee.nom >= 10)
+            if (self.grasps[i]?.grabbed?.abstractPhysicalObject is AbstractHoneyComb)
             {
-                self.Blink(15);
-            }
-            if (bee.nom >= 50)
-            {
-                var wa = new AbstractHoneyComb(self.room.world, self.abstractCreature.pos, self.room.game.GetNewID());
-                self.room.abstractRoom.AddEntity(wa);
-                wa.RealizeInRoom();
-                self.SlugcatGrab(wa.realizedObject, self.FreeHand());
-                bee.nom = 0;
-                bee.bleh = 500;
-                self.SubtractFood(3);
-            }
-            if (self.input[0].pckp)
-            {
-                bee.nom += 2;
+                if (self.FreeHand() != -1 && bee.bleh <= 0 && self.CurrentFood >= 3)
+                {
+                    if (bee.nom >= 10)
+                    {
+                        self.Blink(15);
+                    }
+                    if (bee.nom >= 50)
+                    {
+                        var wa = new AbstractHoneyComb(self.room.world, self.abstractCreature.pos, self.room.game.GetNewID());
+                        self.room.abstractRoom.AddEntity(wa);
+                        wa.RealizeInRoom();
+                        self.SlugcatGrab(wa.realizedObject, self.FreeHand());
+                        bee.nom = 0;
+                        bee.bleh = 500;
+                        self.SubtractFood(3);
+                    }
+                    if (self.input[0].pckp)
+                    {
+                        bee.nom += 2;
+                    }
+                }
             }
         }
-        
     }
 
     public static float wa = Random.value;
