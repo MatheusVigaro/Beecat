@@ -20,6 +20,7 @@ public static class PlayerMiscHooks
         On.Menu.SlugcatSelectMenu.CheckJollyCoopAvailable += SlugcatSelectMenu_CheckJollyCoopAvailable;
         On.Player.Update += Player_Update;
         On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
+        On.SlugcatStats.HiddenOrUnplayableSlugcat += codedphone;
 
         #region moon fix, not proud of this one
         On.PlayerGraphics.CosmeticPearl.Update += (orig, self) =>
@@ -81,7 +82,24 @@ public static class PlayerMiscHooks
         
     }
 
+    public static int wa = Random.value;
     #region his code is mess
+    private static bool codedphone(On.SlugcatStats.orig_HiddenOrUnplayableSlugcat orig, SlugcatStats.Name self)
+    {
+        var result = orig(self);
+        if(self == BeeEnums.Secret)
+        {
+            if(wa <= 0.1f)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return result;
+    }
     private static bool SlugcatSelectMenu_CheckJollyCoopAvailable(On.Menu.SlugcatSelectMenu.orig_CheckJollyCoopAvailable orig, SlugcatSelectMenu self, SlugcatStats.Name slugcat)
     {
         var result = orig(self, slugcat);
