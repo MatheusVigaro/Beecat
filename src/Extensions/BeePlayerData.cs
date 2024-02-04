@@ -22,7 +22,7 @@ public class BeePlayerData
 
     public int WingStaminaMax => (int)(UnlockedExtraStamina ? (int)(WingStaminaMaxBase * 1.6f) : WingStaminaMaxBase);
     public float WingStaminaRecovery => UnlockedExtraStamina ? WingStaminaRecoveryBase * 1.2f : WingStaminaRecoveryBase;
-    public float WingSpeed => UnlockedFasterWings ? WingSpeedBase * 1.3f : WingSpeedBase;
+    public float WingSpeed => UnlockedFasterWings ? WingSpeedBase * 1.3f : WingSpeedBase * (Adrenaline * 0.2f);
 
     public bool UnlockedExtraStamina = false;
     public bool UnlockedVerticalFlight = BeeOptions.VerticalFight.Value;
@@ -36,6 +36,8 @@ public class BeePlayerData
     public Vector2 polepos;
     public int nom;
     public int bleh;
+    public float Adrenaline = 1;
+    public float CurrentSpeed;
     public float wingStamina;
     public int wingStaminaRecoveryCooldown;
     public int currentFlightDuration;

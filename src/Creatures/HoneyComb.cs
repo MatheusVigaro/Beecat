@@ -3,6 +3,7 @@ using Fisobs.Core;
 using Fisobs.Sandbox;
 using Fisobs.Properties;
 using BeeWorld;
+using BeeWorld.Extensions;
 
 namespace wa;
 
@@ -229,6 +230,54 @@ public class HoneyFood
     public void ApplyMyHooks()
     {
         On.SlugcatStats.NourishmentOfObjectEaten += SlugcatStats_NourishmentOfObjectEaten;
+        On.Player.ObjectEaten += Player_ObjectEaten;
+        On.Player.Update += Player_Update;
+        On.Player.Jump += Player_Jump;
+    }
+
+    private void Player_Jump(On.Player.orig_Jump orig, Player self)
+    {
+        orig(self);
+        var wa = self.Bee();
+        if (wa.Adrenaline > 1)
+        {
+            self.jumpBoost += 2;
+        }
+    }
+
+    private void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
+    {
+        orig(self, eu);
+        var wa = self.Bee();
+        if (wa.Adrenaline > 1)
+        {
+            wa.Adrenaline -= 0.01f;
+            float sped = Mathf.Clamp(wa.Adrenaline/20, wa.CurrentSpeed, 50);
+            self.dynamicRunSpeed[1] = sped;
+            if (!self.IsBee(out var bee)) return;
+            if (bee.isFlying)
+            {
+                bee.wingStamina = Mathf.Clamp(bee.wingStamina++, 0, bee.WingStaminaMax);
+            }
+            
+        }
+
+    }
+
+    private void Player_ObjectEaten(On.Player.orig_ObjectEaten orig, Player self, IPlayerEdible edible)
+    {
+        orig(self, edible);
+        if (edible is HoneyCombT)
+        {
+            var wa = self.Bee();
+            wa.Adrenaline = 20;
+            if (wa.Adrenaline > 1)
+            {
+                wa.CurrentSpeed = self.dynamicRunSpeed[1];
+            }
+            if (!self.IsBee(out var bee)) return;
+            bee.wingStamina = bee.WingStaminaMax;
+        }
     }
 
     private int SlugcatStats_NourishmentOfObjectEaten(On.SlugcatStats.orig_NourishmentOfObjectEaten orig, SlugcatStats.Name slugcatIndex, IPlayerEdible eatenobject)
@@ -237,7 +286,7 @@ public class HoneyFood
         if(eatenobject is HoneyCombT && slugcatIndex == BeeEnums.SnowFlake)
         {
             return 20;
-        }
+        }   
         return result;
     }
 }

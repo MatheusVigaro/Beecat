@@ -20,7 +20,7 @@ public static class PlayerMiscHooks
         On.Menu.SlugcatSelectMenu.CheckJollyCoopAvailable += SlugcatSelectMenu_CheckJollyCoopAvailable;
         On.Player.Update += Player_Update;
         On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
-        On.SlugcatStats.HiddenOrUnplayableSlugcat += codedphone;
+        On.SlugcatStats.HiddenOrUnplayableSlugcat += Codedphone;
 
         #region moon fix, not proud of this one
         On.PlayerGraphics.CosmeticPearl.Update += (orig, self) =>
@@ -82,9 +82,9 @@ public static class PlayerMiscHooks
         
     }
 
-    public static int wa = Random.value;
+    public static float wa = Random.value;
     #region his code is mess
-    private static bool codedphone(On.SlugcatStats.orig_HiddenOrUnplayableSlugcat orig, SlugcatStats.Name self)
+    private static bool Codedphone(On.SlugcatStats.orig_HiddenOrUnplayableSlugcat orig, SlugcatStats.Name self)
     {
         var result = orig(self);
         if(self == BeeEnums.Secret)
