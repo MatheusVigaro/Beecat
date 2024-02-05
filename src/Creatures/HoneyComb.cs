@@ -233,6 +233,20 @@ public class HoneyFood
         On.Player.ObjectEaten += Player_ObjectEaten;
         On.Player.Update += Player_Update;
         On.Player.Jump += Player_Jump;
+        On.Player.UpdateBodyMode += Player_UpdateBodyMode;
+    }
+
+
+    private void Player_UpdateBodyMode(On.Player.orig_UpdateBodyMode orig, Player self)
+    {
+        orig(self);
+        var wa = self.Bee();
+        if (wa.Adrenaline > 1)
+        {
+            float sped = Mathf.Lerp(self.dynamicRunSpeed[0], self.dynamicRunSpeed[0] + 5, wa.Adrenaline / 20);
+            self.dynamicRunSpeed[0] = sped;
+            self.dynamicRunSpeed[1] = sped;
+        }
     }
 
     private void Player_Jump(On.Player.orig_Jump orig, Player self)
@@ -241,8 +255,9 @@ public class HoneyFood
         var wa = self.Bee();
         if (wa.Adrenaline > 1)
         {
-            self.jumpBoost += 2;
-        }
+            float sped = Mathf.Lerp(1, 3, wa.Adrenaline / 20);
+            self.jumpBoost += sped;
+        }   
     }
 
     private void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
@@ -252,8 +267,8 @@ public class HoneyFood
         if (wa.Adrenaline > 1)
         {
             wa.Adrenaline -= 0.01f;
-            float sped = Mathf.Clamp(wa.Adrenaline/20, wa.CurrentSpeed, 50);
-            self.dynamicRunSpeed[1] = sped;
+            //float sped = Mathf.Clamp(wa.Adrenaline/20/20/20, wa.CurrentSpeed, 50);
+            
             if (!self.IsBee(out var bee)) return;
             if (bee.isFlying)
             {
@@ -271,10 +286,6 @@ public class HoneyFood
         {
             var wa = self.Bee();
             wa.Adrenaline = 20;
-            if (wa.Adrenaline > 1)
-            {
-                wa.CurrentSpeed = self.dynamicRunSpeed[1];
-            }
             if (!self.IsBee(out var bee)) return;
             bee.wingStamina = bee.WingStaminaMax;
         }

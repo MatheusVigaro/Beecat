@@ -91,7 +91,7 @@ public static class PlayerMiscHooks
         var result = orig(self);
         if(self == BeeEnums.Secret)
         {
-            if(wa <= 0.1f)
+            if(wa >= 0.01f)
             {
                 return true;
             }
