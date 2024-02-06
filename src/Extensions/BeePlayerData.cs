@@ -37,7 +37,6 @@ public class BeePlayerData
     public int nom;
     public int bleh;
     public float Adrenaline = 1;
-    public float CurrentSpeed;
     public float wingStamina;
     public int wingStaminaRecoveryCooldown;
     public int currentFlightDuration;
