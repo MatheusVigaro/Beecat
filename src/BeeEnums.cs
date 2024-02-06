@@ -58,6 +58,6 @@ public static class BeeEnums
         Sound.BeeBuzz?.Unregister();
         AbstractObject.BeeFlower?.Unregister();
         CreatureType.Bup?.Unregister();
-        SandboxUnlockID.Bup.Unregister();
+        SandboxUnlockID.Bup?.Unregister();
     }
 }
