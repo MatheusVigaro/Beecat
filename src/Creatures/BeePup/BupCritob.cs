@@ -59,13 +59,14 @@ public class BupCritob : Critob
         cf.communityInfluence = 0.1f;
         cf.bodySize = 1;
         cf.usesCreatureHoles = false;
+        cf.usesNPCTransportation = true;
         cf.BlizzardAdapted = true;
         cf.BlizzardWanderer = true;
         cf.waterRelationship = CreatureTemplate.WaterRelationship.AirOnly;
         cf.lungCapacity = 1600;
         cf.jumpAction = "Swap Heads";
         cf.pickupAction = "Grab/Freeze";
-        cf.shortcutSegments = 1;
+        cf.shortcutSegments = 2;
         return cf;
     }
 
@@ -367,7 +368,7 @@ public static class BupHook
                         }
 
                     }
-
+                    
 
                     // -- finding poles left right by 1 tiles  
                     if (self.Bee().CDMET)
@@ -389,6 +390,24 @@ public static class BupHook
                             if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i + 5, self.bodyChunks[0].pos.y)).AnyBeam)
                             {
                                 self.Bee().polepos = new Vector2(self.bodyChunks[0].pos.x+i + 17, 0);
+                                self.Bee().CDMET = true;
+                                return;
+                            }
+                        }
+                    }
+                    if (!self.Bee().CDMET)
+                    {
+                        for (int i = 0; i <= self.Bee().wingStamina + 50; i += 10)
+                        {
+                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Solid && self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x - i, self.bodyChunks[0].pos.y - i + 20)).Terrain == Room.Tile.TerrainType.Air)
+                            {
+                                self.Bee().polepos = new Vector2(self.bodyChunks[0].pos.x - i - 10, 0);
+                                self.Bee().CDMET = true;
+                                return;
+                            }
+                            if (self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y - i)).Terrain == Room.Tile.TerrainType.Solid && self.room.GetTile(new Vector2(self.bodyChunks[0].pos.x + i, self.bodyChunks[0].pos.y - i + 20)).Terrain == Room.Tile.TerrainType.Air)
+                            {
+                                self.Bee().polepos = new Vector2(self.bodyChunks[0].pos.x + i + 17, 0);
                                 self.Bee().CDMET = true;
                                 return;
                             }

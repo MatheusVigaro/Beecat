@@ -21,6 +21,7 @@ public static class PlayerMiscHooks
         On.Player.Update += Player_Update;
         On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
         On.SlugcatStats.HiddenOrUnplayableSlugcat += Codedphone;
+        On.SSOracleBehavior.PebblesConversation.AddEvents += PebblesConversation_AddEvents;
 
         #region moon fix, not proud of this one
         On.PlayerGraphics.CosmeticPearl.Update += (orig, self) =>
@@ -48,6 +49,27 @@ public static class PlayerMiscHooks
             if (!self.pGraphics.player.IsBee()) orig(self, leaser, cam, palette);
         };
         #endregion
+    }
+
+    private static void PebblesConversation_AddEvents(On.SSOracleBehavior.PebblesConversation.orig_AddEvents orig, SSOracleBehavior.PebblesConversation self)
+    {
+        if (!self.owner.player.IsBee(out var bee) && !ModManager.MSC)
+        {
+            orig(self);
+            return;
+        }
+        self.events.Add(new Conversation.WaitEvent(self, 50));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("Ah, another peculiar creature."), 0));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("..."), 0));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("Fascinating."), 0));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("You appear to be part slugcat, part bee."), 5));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("A 'Beecat', perhaps."), 20));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("..."), 20));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("It seems you have the ability to fly around."), 10));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("..."), 20));
+        self.events.Add(new Conversation.WaitEvent(self, 10));
+        self.events.Add(new Conversation.TextEvent(self, 0, self.Translate("You are free to go now."), 5));
+
     }
 
     private static void Player_checkInput(On.Player.orig_checkInput orig, Player self)
