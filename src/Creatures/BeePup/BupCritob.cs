@@ -72,8 +72,38 @@ public class BupCritob : Critob
     public override void EstablishRelationships()
     {
         var s = new Relationships(Type);
-        s.Rivals(CreatureTemplate.Type.LizardTemplate, .1f);
-        s.HasDynamicRelationship(CreatureTemplate.Type.Slugcat, .5f);
+        s.Eats(CreatureTemplate.Type.Fly, .5f);
+        s.Eats(CreatureTemplate.Type.EggBug, 1f);
+        s.Fears(CreatureTemplate.Type.Vulture, 1f);
+        s.Fears(CreatureTemplate.Type.BigEel, 1f);
+        s.Fears(CreatureTemplate.Type.DaddyLongLegs, 1f);
+        s.Fears(CreatureTemplate.Type.TentaclePlant, 1f);
+        s.Fears(CreatureTemplate.Type.MirosBird, 1f);
+        s.Fears(CreatureTemplate.Type.Centipede, 0.5f);
+        s.Fears(CreatureTemplate.Type.Centiwing, 0.4f);
+        s.Fears(CreatureTemplate.Type.LizardTemplate, 0.6f);
+        s.Eats(CreatureTemplate.Type.SmallCentipede, 0.6f);
+        s.Eats(CreatureTemplate.Type.SmallNeedleWorm, 0.4f);
+        s.Fears(CreatureTemplate.Type.BigSpider, 0.5f);
+        s.Fears(CreatureTemplate.Type.SpitterSpider, 0.8f);
+        s.Fears(CreatureTemplate.Type.DropBug, 0.5f);
+        s.Fears(CreatureTemplate.Type.RedCentipede, 1f);
+        s.IsInPack(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC, 0.5f);
+        s.Eats(CreatureTemplate.Type.VultureGrub, 0.4f);
+        s.EatenBy(CreatureTemplate.Type.LizardTemplate, 0.5f);
+        s.FearedBy(CreatureTemplate.Type.Fly, 0.5f);
+        s.FearedBy(CreatureTemplate.Type.LanternMouse, 0.3f);
+        s.EatenBy(CreatureTemplate.Type.Vulture, 0.3f);
+        s.HasDynamicRelationship(CreatureTemplate.Type.CicadaA, 1f);
+        s.HasDynamicRelationship(CreatureTemplate.Type.CicadaB, 1f);
+        s.HasDynamicRelationship(CreatureTemplate.Type.JetFish, 1f);
+        s.EatenBy(CreatureTemplate.Type.DaddyLongLegs, 1f);
+        s.EatenBy(CreatureTemplate.Type.MirosBird, 0.6f);
+        s.HasDynamicRelationship(CreatureTemplate.Type.Scavenger, 1f);
+        s.EatenBy(CreatureTemplate.Type.BigSpider, 0.6f);
+        s.Fears(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, 1f);
+        s.EatenBy(MoreSlugcatsEnums.CreatureTemplateType.MirosVulture, 0.6f);
+        s.Eats(MoreSlugcatsEnums.CreatureTemplateType.FireBug, 0.5f);
     }
 }
 
@@ -344,7 +374,6 @@ public static class BupHook
                     {
                         float wa = self.bodyChunks[0].pos.x - self.Bee().polepos.x;
                         self.bodyChunks[0].vel.x += (wa <= 0) ? 1 : -1;
-                        //self.bodyChunks[0].vel.x += Mathf.Sign(self.Bee().polepos.x);
                         ai.abstractAI.SetDestination(self.abstractCreature.pos);    
                     }
                     else
@@ -371,10 +400,6 @@ public static class BupHook
                     if (self.bodyChunks[0].vel.y <= -10 && self.onBack == null)
                     {
                         self.Bee().isFlying = true;
-                    }
-                    if (self.input[0].jmp && self.Bee().CanFly)
-                    {
-                        self.Bee().isFlying = !self.Bee().isFlying;
                     }
                 }
             }
