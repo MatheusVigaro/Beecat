@@ -123,6 +123,27 @@ public static class BupHook
         IL.ShelterDoor.Update += ShelterDoor_Update;
         IL.World.SpawnPupNPCs += World_SpawnPupNPCs;
         _ = new Hook(typeof(StoryGameSession).GetProperty(nameof(StoryGameSession.slugPupMaxCount))!.GetGetMethod(), StoryGameSession_slugPupMaxCount_get);
+        IL.SaveState.SessionEnded += SaveState_SessionEnded;
+    }
+
+    private static void SaveState_SessionEnded(ILContext il)
+    {
+        var cursor = new ILCursor(il);
+
+        var loc = -1;
+        cursor.GotoNext(MoveType.After,
+            i => i.MatchLdloc(out loc),
+            i => i.MatchCallOrCallvirt(out _),
+            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
+            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
+            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
+            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Equality")));
+
+        cursor.MoveAfterLabels();
+        cursor.Emit(OpCodes.Ldarg_1);
+        cursor.Emit(OpCodes.Ldloc, loc);
+        cursor.EmitDelegate((RainWorldGame game, int i) => game.FirstAlivePlayer != null && game.world.GetAbstractRoom(game.FirstAlivePlayer.pos).creatures[i].creatureTemplate.type == BeeEnums.CreatureType.Bup);
+        cursor.Emit(OpCodes.Or);
     }
 
     private static int StoryGameSession_slugPupMaxCount_get(Func<StoryGameSession, int> orig, StoryGameSession self)
