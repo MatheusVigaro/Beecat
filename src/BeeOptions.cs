@@ -19,6 +19,7 @@ public class BeeOptions : OptionsTemplate
 
     public static Configurable<float> BupsSpawnRate = Instance.config.Bind(nameof(BupsSpawnRate), 0.1f, new ConfigurableInfo("Bups Spawnrate (enable top one)", new ConfigAcceptableRange<float>(0.1f, 1), "", "Bups Spawnrate (enable top one)"));
     public static Configurable<bool> BupsSpawnAll = Instance.config.Bind(nameof(BupsSpawnAll), false, new ConfigurableInfo("Enable Bups to spawn in all campaign", null, "", "Enable Bups to spawn in all campaign"));
+    public static Configurable<float> BupsFly = Instance.config.Bind(nameof(BupsFly), 5f, new ConfigurableInfo("Bups Upward fly", new ConfigAcceptableRange<float>(5f, 15), "", "Bups Upward fly"));
 
     public static Configurable<KeyCode> StingerAttackKeyboard = Instance.config.Bind(nameof(StingerAttackKeyboard), KeyCode.C, new ConfigurableInfo("Keybind for Keyboard.", null, "", "Keyboard"));
     public static Configurable<KeyCode> StingerAttackPlayer1 = Instance.config.Bind(nameof(StingerAttackPlayer1), KeyCode.Joystick1Button3, new ConfigurableInfo("Keybind for Player 1", null, "", "Keybind for Player 1"));
@@ -85,6 +86,9 @@ public class BeeOptions : OptionsTemplate
 
         AddCheckBox(VerticalFight);
         DrawCheckBoxes(ref Tabs[tabIndex]);
+
+        AddFloatSlider(BupsFly, BupsFly.info.description);
+        DrawFloatSliders(ref Tabs[tabIndex]);
 
         DrawBox(ref Tabs[tabIndex]);
     }

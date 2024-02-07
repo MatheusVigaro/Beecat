@@ -52,6 +52,7 @@ public class BupCritob : Critob
         }.IntoTemplate();
         cf.meatPoints = 6;
         cf.visualRadius = 1500;
+        cf.baseStunResistance = -25;
         cf.waterVision = 0.3f;
         cf.stowFoodInDen = true;   
         cf.throughSurfaceVision = 0.5f;
@@ -406,8 +407,9 @@ public static class BupHook
 
                     if (self.input[0].y > 0 )
                     {
-                        self.bodyChunks[0].vel.y += 10;
-                        self.bodyChunks[1].vel.y += 10;
+                        self.bodyChunks[0].vel.y += BeeOptions.BupsFly.Value;
+                        self.bodyChunks[1].vel.y += BeeOptions.BupsFly.Value;
+                        self.Bee().wingStamina--;
                     }
 
 
