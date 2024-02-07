@@ -124,6 +124,20 @@ public static class BupHook
         IL.World.SpawnPupNPCs += World_SpawnPupNPCs;
         _ = new Hook(typeof(StoryGameSession).GetProperty(nameof(StoryGameSession.slugPupMaxCount))!.GetGetMethod(), StoryGameSession_slugPupMaxCount_get);
         IL.SaveState.SessionEnded += SaveState_SessionEnded;
+        On.Player.CanMaulCreature += Player_CanMaulCreature;
+    }
+
+    private static bool Player_CanMaulCreature(On.Player.orig_CanMaulCreature orig, Player self, Creature crit)
+    {
+        var result = orig(self, crit);
+        if (crit is Player PL)
+        {
+            if (PL.Template.type.value == "Bup")
+            {
+                return false;
+            }
+        }
+        return result;
     }
 
     private static void SaveState_SessionEnded(ILContext il)
@@ -172,7 +186,7 @@ public static class BupHook
 
         cursor.MoveAfterLabels();
         cursor.Emit(OpCodes.Ldarg_0);
-        cursor.EmitDelegate((CreatureTemplate old, World self) => self.game.session is StoryGameSession session && session.saveStateNumber == BeeEnums.Beecat ? StaticWorld.GetCreatureTemplate(BeeEnums.CreatureType.Bup) : old);
+        cursor.EmitDelegate((CreatureTemplate old, World self) => self.game.session is StoryGameSession session && session.saveStateNumber == BeeEnums.Beecat || (BeeOptions.BupsSpawnAll.Value && Random.value >= BeeOptions.BupsSpawnRate.Value) ? StaticWorld.GetCreatureTemplate(BeeEnums.CreatureType.Bup) : old);
     }
 
     private static void ShelterDoor_Update(ILContext il)
@@ -343,7 +357,7 @@ public static class BupHook
                         break;
                     }
                 }
-                if (Creaturenearby != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0)
+                if (Creaturenearby != null && !Creaturenearby.dead && (self.Consious || (self.dangerGraspTime < 200 && !self.dead)) && !self.Bee().stingerUsed && self.Bee().stingerAttackCooldown <= 0 && self.onBack == null)
                 {
                     ai.abstractAI.Moved(); //RUN AWAY AFTER STING
                     ai.nap = true; // nvm go sleep
@@ -389,7 +403,13 @@ public static class BupHook
                         }
 
                     }
-                    
+
+                    if (self.input[0].y > 0 )
+                    {
+                        self.bodyChunks[0].vel.y += 10;
+                        self.bodyChunks[1].vel.y += 10;
+                    }
+
 
                     // -- finding poles left right by 1 tiles  
                     if (self.Bee().CDMET)

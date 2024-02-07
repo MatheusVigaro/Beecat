@@ -18,8 +18,8 @@ public class Plugin : BaseUnityPlugin
 {
     public const string MOD_ID = "beeworld";
     public const string MOD_NAME = "Beecat";
-    public const string VERSION = "1.3.0";
-    public const string AUTHORS = "Vigaro";
+    public const string VERSION = "1.4.2";
+    public const string AUTHORS = "Vigaro, MyztiLeaf";
         
     private void OnEnable()
     {
