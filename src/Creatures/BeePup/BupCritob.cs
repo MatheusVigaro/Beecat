@@ -14,7 +14,7 @@ public class BupCritob : Critob
 {
     public BupCritob() : base(BeeEnums.CreatureType.Bup)
     {
-        Icon = new SimpleIcon("Kill_Slugcat", new Color(1, 0.8117647058823529f, 0.050980392156862744f));
+        Icon = new SimpleIcon("atlases/bups", new Color(1, 1, 1));
         ShelterDanger = ShelterDanger.Safe;
         LoadedPerformanceCost = 100f;
         SandboxPerformanceCost = new SandboxPerformanceCost(0.5f, 0.5f);
@@ -126,7 +126,7 @@ public static class BupHook
         _ = new Hook(typeof(StoryGameSession).GetProperty(nameof(StoryGameSession.slugPupMaxCount))!.GetGetMethod(), StoryGameSession_slugPupMaxCount_get);
         IL.SaveState.SessionEnded += SaveState_SessionEnded;
         On.Player.CanMaulCreature += Player_CanMaulCreature;
-    }
+    }   
 
     private static bool Player_CanMaulCreature(On.Player.orig_CanMaulCreature orig, Player self, Creature crit)
     {
@@ -249,7 +249,7 @@ public static class BupHook
 
     private static bool Player_SlugSlamConditions(On.Player.orig_SlugSlamConditions orig, Player self, PhysicalObject otherObject)
     {
-        return orig(self, otherObject) && !(otherObject is Creature crit && crit.abstractCreature.creatureTemplate.type == MoreSlugcatsEnums.CreatureTemplateType.SlugNPC);
+        return orig(self, otherObject) && !(otherObject is Creature crit && (crit.abstractCreature.creatureTemplate.type == MoreSlugcatsEnums.CreatureTemplateType.SlugNPC || crit.abstractCreature.creatureTemplate.type == BeeEnums.CreatureType.Bup));
     }
 
     private static void OracleBehavior_CheckStrayCreatureInRoom(ILContext il)

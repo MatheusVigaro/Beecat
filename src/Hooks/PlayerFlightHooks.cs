@@ -75,12 +75,12 @@ public static class PlayerFlightHooks
                 {
                     if (self.input[0].y > 0)
                     {
-                        self.bodyChunks[0].vel.y += bee.WingSpeed * 0.75f;
+                        self.bodyChunks[0].vel.y += bee.WingSpeedFly + (bee.Adrenaline * 0.5f) * 0.75f;
                         self.bodyChunks[1].vel.y -= 0.3f;
                     }
                     else if (self.input[0].y < 0)
                     {
-                        self.bodyChunks[0].vel.y -= bee.WingSpeed;
+                        self.bodyChunks[0].vel.y -= bee.WingSpeedFly + (bee.Adrenaline * 0.2f);
                         self.bodyChunks[1].vel.y += 0.3f;
                     }
                 }

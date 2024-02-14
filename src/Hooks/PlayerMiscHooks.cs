@@ -53,7 +53,7 @@ public static class PlayerMiscHooks
 
     private static void PebblesConversation_AddEvents(On.SSOracleBehavior.PebblesConversation.orig_AddEvents orig, SSOracleBehavior.PebblesConversation self)
     {
-        if (!self.owner.player.IsBee(out var bee) && !ModManager.MSC)
+        if (!self.owner.player.IsBee(out var bee))
         {
             orig(self);
             return;

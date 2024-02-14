@@ -18,7 +18,7 @@ public class Plugin : BaseUnityPlugin
 {
     public const string MOD_ID = "beeworld";
     public const string MOD_NAME = "Beecat";
-    public const string VERSION = "1.4.2";
+    public const string VERSION = "1.4.3";
     public const string AUTHORS = "Vigaro, MyztiLeaf";
         
     private void OnEnable()
@@ -55,6 +55,7 @@ public class Plugin : BaseUnityPlugin
             Futile.atlasManager.LoadAtlas("atlases/beecathands");
             Futile.atlasManager.LoadAtlas("atlases/HoneyComb");
             Futile.atlasManager.LoadImage("atlases/beecatstinger");
+            Futile.atlasManager.LoadImage("atlases/bups");
 
             TailTexture = new Texture2D(150, 75, TextureFormat.ARGB32, false);
             var tailTextureFile = AssetManager.ResolveFilePath("textures/beecattail.png");
