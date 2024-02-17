@@ -212,38 +212,43 @@ public static class BupHook
 
     private static void SaveState_SessionEnded(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
     {
-		for (var j = 0; j < game.GetStorySession.playerSessionRecords.Length; j++)
-		{
-			if (game.GetStorySession.playerSessionRecords[j] == null || (ModManager.CoopAvailable && game.world.GetAbstractRoom(game.Players[j].pos) == null))
-			{
-				continue;
-			}
-			game.GetStorySession.playerSessionRecords[j].pupCountInDen = 0;
-			var flag = false;
-			game.GetStorySession.playerSessionRecords[j].wentToSleepInRegion = game.world.region.name;
-			foreach (var crit in game.world.GetAbstractRoom(game.Players[j].pos).creatures)
+        if (self.saveStateNumber == BeeEnums.Beecat)
+        {
+            for (var j = 0; j < game.GetStorySession.playerSessionRecords.Length; j++)
             {
-                if (!crit.state.alive || crit.state.socialMemory == null || crit.realizedCreature == null || crit.abstractAI?.RealAI?.friendTracker?.friend == null || crit.abstractAI.RealAI.friendTracker.friend != game.Players[j].realizedCreature || !(crit.state.socialMemory.GetLike(game.Players[j].ID) > 0f))
+                if (game.GetStorySession.playerSessionRecords[j] == null || (ModManager.CoopAvailable && game.world.GetAbstractRoom(game.Players[j].pos) == null))
                 {
                     continue;
                 }
-                if (ModManager.MSC && crit.creatureTemplate.type == BeeEnums.CreatureType.Bup && crit.state is PlayerNPCState state)
+
+                game.GetStorySession.playerSessionRecords[j].pupCountInDen = 0;
+                var flag = false;
+                game.GetStorySession.playerSessionRecords[j].wentToSleepInRegion = game.world.region.name;
+                foreach (var crit in game.world.GetAbstractRoom(game.Players[j].pos).creatures)
                 {
-                    if (state.foodInStomach - (state.Malnourished ? SlugcatStats.SlugcatFoodMeter(MoreSlugcatsEnums.SlugcatStatsName.Slugpup).x : SlugcatStats.SlugcatFoodMeter(MoreSlugcatsEnums.SlugcatStatsName.Slugpup).y) >= 0)
+                    if (!crit.state.alive || crit.state.socialMemory == null || crit.realizedCreature == null || crit.abstractAI?.RealAI?.friendTracker?.friend == null || crit.abstractAI.RealAI.friendTracker.friend != game.Players[j].realizedCreature || !(crit.state.socialMemory.GetLike(game.Players[j].ID) > 0f))
                     {
-                        game.GetStorySession.playerSessionRecords[j].pupCountInDen++;
+                        continue;
+                    }
+
+                    if (ModManager.MSC && crit.creatureTemplate.type == BeeEnums.CreatureType.Bup && crit.state is PlayerNPCState state)
+                    {
+                        if (state.foodInStomach - (state.Malnourished ? SlugcatStats.SlugcatFoodMeter(MoreSlugcatsEnums.SlugcatStatsName.Slugpup).x : SlugcatStats.SlugcatFoodMeter(MoreSlugcatsEnums.SlugcatStatsName.Slugpup).y) >= 0)
+                        {
+                            game.GetStorySession.playerSessionRecords[j].pupCountInDen++;
+                        }
+                    }
+                    else if (!flag)
+                    {
+                        flag = true;
+                        game.GetStorySession.playerSessionRecords[j].friendInDen = crit;
+                        var orInitiateRelationship = crit.state.socialMemory.GetOrInitiateRelationship(game.Players[j].ID);
+                        orInitiateRelationship.like = Mathf.Lerp(orInitiateRelationship.like, 1f, 0.5f);
                     }
                 }
-                else if (!flag)
-                {
-                    flag = true;
-                    game.GetStorySession.playerSessionRecords[j].friendInDen = crit;
-                    var orInitiateRelationship = crit.state.socialMemory.GetOrInitiateRelationship(game.Players[j].ID);
-                    orInitiateRelationship.like = Mathf.Lerp(orInitiateRelationship.like, 1f, 0.5f);
-                }
             }
-		}
-        
+        }
+
         orig(self, game, survived, newMalnourished);
     }
 
