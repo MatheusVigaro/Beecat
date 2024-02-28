@@ -63,7 +63,7 @@ public static class PlayerCombatHooks
             if (bee.stingerTargetChunk?.owner is Creature target && !target.dead)
             {
                 self.room.PlaySound(SoundID.Spear_Stick_In_Creature, bee.stingerTargetChunk);
-                target.Violence(self.bodyChunks[1], (bee.stingerTargetChunk.pos - self.bodyChunks[1].pos).normalized, bee.stingerTargetChunk, null, Creature.DamageType.Stab, 0.2f, 800);
+                target.Violence(self.bodyChunks[1], (bee.stingerTargetChunk.pos - self.bodyChunks[1].pos).normalized, bee.stingerTargetChunk, null, Creature.DamageType.Stab, (self.isNPC && self.Template.type.value == "Bup") ? 0.2f + bee.beepupatk : 0.2f, 800);
                 bee.stingerUsed = !BeeOptions.UnlimitedStingers.Value;
             }
         }

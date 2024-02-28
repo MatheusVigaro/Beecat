@@ -35,6 +35,7 @@ public class BeePlayerData
     public bool CDMET;
     public bool DRAGGER_COUNT;
     public Vector2 polepos;
+    public float beepupatk;
     public int nom;
     public int bleh;
     public float Adrenaline = 1;
@@ -148,6 +149,7 @@ public class BeePlayerData
         Random.InitState(player.abstractCreature.ID.RandomSeed);
         
         int wa = Random.Range(0, 100);
+        beepupatk = Random.value;
         if (IsBup && wa >= 99) // DO NOT MODIFY THIS TO CHECK PWEASE :monkplead:.
         {
             DRAGGER_COUNT = true;
