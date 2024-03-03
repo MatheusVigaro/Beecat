@@ -6,6 +6,7 @@ using Fisobs.Sandbox;
 using HUD;
 using MonoMod.RuntimeDetour;
 using MoreSlugcats;
+using Smoke;
 using VoidSea;
 
 namespace BeeWorld;
@@ -352,6 +353,62 @@ public static class BupHook
             if (self.Template.type.value == "Bup")
             {
                 var ai = self.AI;
+                // -- snowbups
+                if (self.Bee().SnowBup)
+                {
+                    if (self.Bee().effecttime > 0)
+                    {
+                        if (new[] { Player.AnimationIndex.HangFromBeam, Player.AnimationIndex.GetUpOnBeam, Player.AnimationIndex.StandOnBeam, Player.AnimationIndex.ClimbOnBeam, Player.AnimationIndex.GetUpToBeamTip, Player.AnimationIndex.HangUnderVerticalBeam, Player.AnimationIndex.BeamTip, Player.AnimationIndex.ZeroGPoleGrab }.Contains(self.animation))
+                        {
+                            self.Bee().effecttime--;
+                        }
+                        else
+                        {
+                            var smoke = new FireSmoke(self.room);
+                            self.Bee().effecttime--;
+                            smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), new(113, 135, 171), 10);
+                            smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), new(161, 201, 209), 10);
+                            smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), Color.white, 10);
+
+                        }
+                    }
+                        
+                    if (self.canJump >= 4 && self.Bee().landed)
+                    {
+                        self.Bee().landed = false;
+                    }
+                    if (self.input[0].jmp && !self.input[1].jmp && self.canJump == 0 && !self.Bee().landed)
+                    {
+                        self.Bee().landed = true;
+                        self.Bee().effecttime = 20;
+                        self.Bee().isFlying = true;
+                        self.room.PlaySound(MoreSlugcatsEnums.MSCSoundID.Throw_FireSpear, self.firstChunk.pos);
+                        self.mushroomEffect = 1f;
+
+                        var hypothermiaFactor = Mathf.Lerp(1, 0.5f, self.Hypothermia);
+
+                        if (self.input[0].x != 0)
+                        {
+                            self.bodyChunks[0].vel.y = Mathf.Min(self.bodyChunks[0].vel.y * 0.25f, 0f) + 11f * hypothermiaFactor;
+                            self.bodyChunks[1].vel.y = Mathf.Min(self.bodyChunks[1].vel.y * 0.25f, 0f) + 10f * hypothermiaFactor;
+                            self.bodyChunks[0].vel.x = 10f * self.input[0].x * hypothermiaFactor;
+                            self.bodyChunks[1].vel.x = 8f * self.input[0].x * hypothermiaFactor;
+                            self.jumpBoost = 8;
+                        }
+                        else
+                        {
+                            self.bodyChunks[0].vel.y = 14f * hypothermiaFactor;
+                            self.bodyChunks[1].vel.y = 13f * hypothermiaFactor;
+                            self.jumpBoost = 10;
+                        }
+                        self.animation = Player.AnimationIndex.Flip;
+                        self.Blink(5);
+                    }
+                    if (ai.abstractAI.isTamed)
+                    {
+
+                    }
+                }
 
                 // -- normal bups
                 Creature Creaturenearby = null;
@@ -375,7 +432,7 @@ public static class BupHook
                 Player Snowflake = null;
                 foreach (var otherPlayers in self.room.updateList.OfType<Player>())
                 {
-                    if (self.Bee().DRAGGER_COUNT && otherPlayers.slugcatStats.name == BeeEnums.SnowFlake && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 500))
+                    if (self.Bee().SnowBup && otherPlayers.slugcatStats.name == BeeEnums.SnowFlake && Custom.DistLess(self.bodyChunks[0].pos, otherPlayers.bodyChunks[0].pos, otherPlayers.bodyChunks[0].rad + 500))
                     {
                         Snowflake = otherPlayers;
                         break;
