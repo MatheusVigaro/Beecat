@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\mod\plugins</OutputPath>
+    <OutputPath>..\mod\newest\plugins</OutputPath>
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
