@@ -144,8 +144,9 @@ public static class BupHook
 
     private static void SaveState_SessionEnded(ILContext il)
     {
-        var cursor = new ILCursor(il);
+        ILCursor cursor = new ILCursor(il);
 
+        //Check for Bups, so they don't count as friends
         var loc = -1;
         cursor.GotoNext(MoveType.After,
             i => i.MatchLdloc(out loc),
@@ -154,12 +155,13 @@ public static class BupHook
             i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
             i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
             i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Equality")));
-
-        cursor.MoveAfterLabels();
-        cursor.Emit(OpCodes.Ldarg_1);
-        cursor.Emit(OpCodes.Ldloc, loc);
-        cursor.EmitDelegate((RainWorldGame game, int i) => game.FirstAlivePlayer != null && game.world.GetAbstractRoom(game.FirstAlivePlayer.pos).creatures[i].creatureTemplate.type == BeeEnums.CreatureType.Bup);
-        cursor.Emit(OpCodes.Or);
+        cursor.Emit(OpCodes.Ldarg_1);//Push RainWorldGame onto stack
+        cursor.Emit(OpCodes.Ldloc, loc); //Push loop index value onto stack
+        cursor.EmitDelegate<Func<bool, RainWorldGame, int, bool>>((matchFound, game, index) => //Send all three onto stack
+        {
+            //Return an existing match, or a BeePup match
+            return matchFound || game.FirstAlivePlayer != null && game.world.GetAbstractRoom(game.FirstAlivePlayer.pos).creatures[index].creatureTemplate.type == BeeEnums.CreatureType.Bup;
+        });
     }
 
     private static int StoryGameSession_slugPupMaxCount_get(Func<StoryGameSession, int> orig, StoryGameSession self)
