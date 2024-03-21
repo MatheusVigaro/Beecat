@@ -18,7 +18,7 @@ public static class PlayerCombatHooks
         var cursor = new ILCursor(il);
 
         cursor.GotoNext(MoveType.Before, i => i.MatchLdsfld<Player.AnimationIndex>("Flip"));
-        cursor.GotoNext(MoveType.Before, i => i.MatchLdloc(1));
+        cursor.GotoNext(MoveType.Before, i => i.MatchLdloc(out _));
 
         cursor.MoveAfterLabels();
 
