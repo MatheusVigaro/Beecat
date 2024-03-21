@@ -1,0 +1,9 @@
+Template: NONE
+CeilingDrips: 0.1195652
+RainIntensity: 0.4891308
+RumbleIntensity: 0.3260873
+Grime: 0.2608696
+Palette: 18
+Effects: AboveCloudsView-1-20-20, PixelShift-0.5108696-11-69, 
+FadePalette: 2, 0.6847824
+BackgroundOffset: 0,-1413.043

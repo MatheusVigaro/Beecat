@@ -406,10 +406,6 @@ public static class BupHook
                         self.animation = Player.AnimationIndex.Flip;
                         self.Blink(5);
                     }
-                    if (ai.abstractAI.isTamed)
-                    {
-
-                    }
                 }
 
                 // -- normal bups

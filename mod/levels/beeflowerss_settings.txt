@@ -1,0 +1,8 @@
+Template: NONE
+DangerType: None
+Palette: 18
+EffectColorA: 18
+EffectColorB: 3
+Effects: ZeroG-1-20-20, ZeroGSpecks-0.3260868-30-30, SSSwarmers-0.01086957-40-40, 
+PlacedObjects: LightFixture><541.3068><617.4485><RedLight~17.32051~-10~91, LightSource><53.92848><268.3403><1~Environment~0~100~50~86.60254~0~0~None~0~0, LightSource><83.55093><81.26901><1~Environment~216~121~50~86.60254~0~0~None~0~0, LightSource><840.5891><561.369><1~Environment~-180.9999~-119~50~86.60254~0~0~None~0~0, LightFixture><71.73248><560.8008><RedLight~17.32051~-10~59, LightFixture><674.1885><79.81686><RedLight~17.32051~-10~81, SSLightRod><412.5767><512.3497><-81.67957~-230~0.4891304~225~278.2609~0.1630435, SSLightRod><456.33><132.1447><17.32051~-10~0.5760883~45~311.3053~0.2499987, WallMycelia><207.3671><66.33786><72.00003~93, WallMycelia><621.5379><534.8036><-134.9999~-108, CoralStem><367.9491><310.5186><-12~-152, 
+FadePalette: 17, 0.804348

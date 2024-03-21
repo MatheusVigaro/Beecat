@@ -1,0 +1,9 @@
+Template: NONE
+Clouds: 0.2934783
+Grime: 0.25
+RandomItemDensity: 0.2391304
+WaterReflectionAlpha: 0.9021739
+Palette: 9
+EffectColorB: 13
+PlacedObjects: CustomDecal><338.5593><339.6896><-21~115~184~127~249~-4~-409~-38~0~0.2717391~0.9347826~rust3~0.8369565~1~0.8369565~1~0.8369565~1~0.8369565~1, 
+FadePalette: 11, 0.1195652
