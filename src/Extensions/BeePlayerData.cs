@@ -154,7 +154,7 @@ public class BeePlayerData
         
         int wa = Random.Range(0, 100);
         beepupatk = Random.value;
-        if (IsBup && wa <= 99) // DO NOT MODIFY THIS TO CHECK PWEASE :monkplead:.
+        if (IsBup && wa >= 99) // DO NOT MODIFY THIS TO CHECK PWEASE :monkplead:.
         {
             SnowBup = true;
             BodyColor = pg.GetColor(BeeEnums.Color.Body) ?? Custom.hexToColor("FFF3E5");
