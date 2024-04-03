@@ -115,7 +115,7 @@ public static class BupHook
     public static void Apply()
     {
         On.Player.Update += BupsAI;
-        IL.HUD.FoodMeter.ctor += BupsFood;
+        IL.HUD.FoodMeter.TrySpawnPupBars += BupsFood;
         IL.VoidSea.VoidSeaScene.Update += VoidSeaScene_Update;
         IL.GhostCreatureSedater.Update += GhostCreatureSedater_Update;
         On.OracleBehavior.CheckSlugpupsInRoom += OracleBehavior_CheckSlugpupsInRoom;
