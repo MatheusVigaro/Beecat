@@ -1,9 +1,12 @@
 ﻿using BeeWorld;
 using SlugBase.SaveData;
+
 namespace Beeworld;
+
 public static class FlowerQuests
 {
     public static Quest huh;
+
     public static void Apply()
     {
         On.Player.Update += Player_Update;
@@ -31,7 +34,7 @@ public static class FlowerQuests
                     self.room.AddObject(new Quest(new Vector2(264, 154), "SS", "VerticalFly"));
                     break;
                 case "su_a40":
-                    if (Data.TryGet("SS", out bool SU) || SU) return;
+                    if (Data.TryGet("SU", out bool SU) || SU) return;
                     self.room.AddObject(new Quest(new Vector2(824, 655), "SU", "StingDMG"));
                     break;
                 case "sb_gor02":
@@ -43,7 +46,7 @@ public static class FlowerQuests
                     self.room.AddObject(new Quest(new Vector2(263, 373), "DS", "Speed"));
                     break;
                 case "sh_a10":
-                    if (Data.TryGet("DS", out bool SH) || SH) return;
+                    if (Data.TryGet("SH", out bool SH) || SH) return;
                     self.room.AddObject(new Quest(new Vector2(885, 615), "SH", "Speed"));
                     break;
                 case "lm_edge02":
