@@ -378,7 +378,6 @@ public static class PlayerGraphicsHooks
         {
             sLeaser.sprites[bee.floofSprite].scaleY = 0.55f;
             sLeaser.sprites[bee.floofSprite].scaleX = 0.70f;
-            sLeaser.sprites[bee.floofSprite].color = new Color(0.8f, 0.8f, 0.8f);
         }
 
         if (bee.wingStamina < bee.LowWingStamina && !self.player.dead)

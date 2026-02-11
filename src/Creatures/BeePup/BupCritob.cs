@@ -119,7 +119,7 @@ public static class BupHook
         IL.OracleBehavior.CheckStrayCreatureInRoom += OracleBehavior_CheckStrayCreatureInRoom;
         On.Player.SlugSlamConditions += Player_SlugSlamConditions;
         On.SaveState.SessionEnded += SaveState_SessionEnded;
-        IL.ShelterDoor.Update += ShelterDoor_Update;
+        //IL.ShelterDoor.Update += ShelterDoor_Update;
         IL.World.SpawnPupNPCs += World_SpawnPupNPCs;
         _ = new Hook(typeof(StoryGameSession).GetProperty(nameof(StoryGameSession.slugPupMaxCount))!.GetGetMethod(), StoryGameSession_slugPupMaxCount_get);
         IL.SaveState.SessionEnded += SaveState_SessionEnded;
@@ -346,7 +346,7 @@ public static class BupHook
 
     private static RelationshipTracker.TrackedCreatureState SlugNPCAI_IUseARelationshipTracker_CreateTrackedCreatureState(On.MoreSlugcats.SlugNPCAI.orig_IUseARelationshipTracker_CreateTrackedCreatureState orig, SlugNPCAI self, RelationshipTracker.DynamicRelationship rel)
     {
-        if (self.creature.type.value == "Bup")
+        if (self.creature.creatureTemplate.type == BeeEnums.CreatureType.Bup)
         {
             CreatureTemplate.Relationship currentRelationship = rel.currentRelationship;
             Creature realizedCreature = rel.trackerRep.representedCreature.realizedCreature;
@@ -382,11 +382,15 @@ public static class BupHook
                         }
                         else
                         {
-                            var smoke = new FireSmoke(self.room);
-                            self.Bee().effecttime--;
-                            smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), new(113, 135, 171), 10);
-                            smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), new(161, 201, 209), 10);
-                            smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), Color.white, 10);
+                            try
+                            {
+                                var smoke = new FireSmoke(self.room);
+                                self.Bee().effecttime--;
+                                smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), new(113, 135, 171), 10);
+                                smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), new(161, 201, 209), 10);
+                                smoke.EmitSmoke(self.mainBodyChunk.pos, -self.bodyChunks[0].vel * Custom.RNV(), Color.white, 10);
+                            }
+                            catch { } // i aint catching issues here
 
                         }
                     }
