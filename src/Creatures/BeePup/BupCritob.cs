@@ -114,9 +114,9 @@ public static class BupHook
     {
         On.Player.Update += BupsAI;
         IL.VoidSea.VoidSeaScene.Update += VoidSeaScene_Update;
-        IL.GhostCreatureSedater.Update += GhostCreatureSedater_Update;
+        //IL.GhostCreatureSedater.Update += GhostCreatureSedater_Update;
         On.OracleBehavior.CheckSlugpupsInRoom += OracleBehavior_CheckSlugpupsInRoom;
-        IL.OracleBehavior.CheckStrayCreatureInRoom += OracleBehavior_CheckStrayCreatureInRoom;
+        //IL.OracleBehavior.CheckStrayCreatureInRoom += OracleBehavior_CheckStrayCreatureInRoom; SHUT
         On.Player.SlugSlamConditions += Player_SlugSlamConditions;
         On.SaveState.SessionEnded += SaveState_SessionEnded;
         //IL.ShelterDoor.Update += ShelterDoor_Update;

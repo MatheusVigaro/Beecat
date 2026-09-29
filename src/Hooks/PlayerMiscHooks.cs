@@ -13,13 +13,6 @@ public static class PlayerMiscHooks
         On.Player.Grabability += Player_Grabability;
         On.Player.DeathByBiteMultiplier += Player_DeathByBiteMultiplier;
         On.Player.checkInput += Player_checkInput;
-
-
-        On.Menu.SlugcatSelectMenu.UpdateStartButtonText += NULL;
-        On.Menu.SlugcatSelectMenu.CheckJollyCoopAvailable += SlugcatSelectMenu_CheckJollyCoopAvailable;
-        On.Player.Update += Player_Update;
-        On.PlayerGraphics.DrawSprites += PlayerGraphics_DrawSprites;
-        On.SlugcatStats.HiddenOrUnplayableSlugcat += Codedphone;
         
         #region moon fix, not proud of this one
         On.PlayerGraphics.CosmeticPearl.Update += (orig, self) =>
@@ -85,107 +78,6 @@ public static class PlayerMiscHooks
 
     public static float wa = Random.value;
     #region his code is mess
-    private static bool Codedphone(On.SlugcatStats.orig_HiddenOrUnplayableSlugcat orig, SlugcatStats.Name self)
-    {
-        var result = orig(self);
-        if(self == BeeEnums.Secret)
-        {
-            if(wa >= 0.01f)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        return result;
-    }
-    private static bool SlugcatSelectMenu_CheckJollyCoopAvailable(On.Menu.SlugcatSelectMenu.orig_CheckJollyCoopAvailable orig, SlugcatSelectMenu self, SlugcatStats.Name slugcat)
-    {
-        var result = orig(self, slugcat);
-        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.Secret)
-        {
-            return false;
-        }
-        return result;
-    }
-
-    private static void PlayerGraphics_DrawSprites(On.PlayerGraphics.orig_DrawSprites orig, PlayerGraphics self, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, float timeStacker, Vector2 camPos)
-    {
-        orig(self, sLeaser, rCam, timeStacker, camPos);
-        if(self.owner is Player PL)
-        {
-            if (PL.slugcatStats.name == BeeEnums.Secret)
-            {
-                for (var i = 0; i < sLeaser.sprites.Length; i++)
-                {
-                    if (i != 9)
-                    {
-                        sLeaser.sprites[i].isVisible = false;
-                    }
-                }
-            }
-        }    
-    }
-
-    private static void Player_Update(On.Player.orig_Update orig, Player self, bool eu)
-    {
-        orig(self, eu);
-        if (self.slugcatStats.name == BeeEnums.Secret)
-        {
-            self.Die();
-        }
-    }
-    private static void NULL(On.Menu.SlugcatSelectMenu.orig_UpdateStartButtonText orig, Menu.SlugcatSelectMenu self)
-    {
-        orig(self);
-        if (self.slugcatPages[self.slugcatPageIndex].slugcatNumber == BeeEnums.Secret)
-        {
-            self.startButton.fillTime = 99999999999999999;
-            self.startButton.menuLabel.text = "? ? ?";
-            if (self.slugcatPages[self.slugcatPageIndex] is SlugcatSelectMenu.SlugcatPageNewGame page)
-            {
-                int wa = Random.Range(0, 25);   
-                if (wa <= 3)
-                {
-                    page.difficultyLabel.text = "???";
-                }
-                else if(wa <= 5)
-                {
-                    page.difficultyLabel.text = "?? ?";
-                }
-                else if (wa <= 13)
-                {
-                    page.difficultyLabel.text = "ERROR";
-                }
-                else if (wa <= 10)
-                {
-                    page.difficultyLabel.text = "? ??";
-                }
-                else if (wa <= 13)
-                {
-                    page.difficultyLabel.text = "#E!P M3";
-                }
-                else if (wa <= 15)
-                {
-                    page.difficultyLabel.text = "NULL";
-                }
-                else if (wa <= 18)
-                {
-                    page.difficultyLabel.text = "Cryptic?!";
-                }
-                else if (wa <= 20)
-                {
-                    page.difficultyLabel.text = "? ? ?";
-                }
-                else if (wa <= 25)
-                {
-                    page.difficultyLabel.text = "$3CR37";
-                }
-            }
-        }
-    }
     #endregion
 
     private static float Player_DeathByBiteMultiplier(On.Player.orig_DeathByBiteMultiplier orig, Player self)
