@@ -1,4 +1,4 @@
-﻿using BeeWorld.Extensions;
+using BeeWorld.Extensions;
 using DevInterface;
 using Fisobs.Core;
 using Fisobs.Creatures;
@@ -114,12 +114,11 @@ public static class BupHook
     {
         On.Player.Update += BupsAI;
         IL.VoidSea.VoidSeaScene.Update += VoidSeaScene_Update;
-        //IL.GhostCreatureSedater.Update += GhostCreatureSedater_Update;
         On.OracleBehavior.CheckSlugpupsInRoom += OracleBehavior_CheckSlugpupsInRoom;
-        //IL.OracleBehavior.CheckStrayCreatureInRoom += OracleBehavior_CheckStrayCreatureInRoom; SHUT
+        IL.OracleBehavior.CheckStrayCreatureInRoom += OracleBehavior_CheckStrayCreatureInRoom;
         On.Player.SlugSlamConditions += Player_SlugSlamConditions;
         On.SaveState.SessionEnded += SaveState_SessionEnded;
-        //IL.ShelterDoor.Update += ShelterDoor_Update;
+        IL.ShelterDoor.Update += ShelterDoor_Update;
         IL.World.SpawnPupNPCs += World_SpawnPupNPCs;
         _ = new Hook(typeof(StoryGameSession).GetProperty(nameof(StoryGameSession.slugPupMaxCount))!.GetGetMethod(), StoryGameSession_slugPupMaxCount_get);
         IL.SaveState.SessionEnded += SaveState_SessionEnded;
@@ -215,22 +214,25 @@ public static class BupHook
 
     private static void ShelterDoor_Update(ILContext il)
     {
+        int loc = -1;
         var cursor = new ILCursor(il);
 
-        var loc = -1;
         cursor.GotoNext(MoveType.After,
             i => i.MatchLdloc(out loc),
-            i => i.MatchCallOrCallvirt(out _),
-            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
-            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
-            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
-            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Inequality")));
+            i => i.MatchCallOrCallvirt(typeof(List<AbstractCreature>).GetProperty("Item")?.GetGetMethod()),
+            i => i.MatchLdfld<AbstractCreature>("creatureTemplate"),
+            i => i.MatchLdfld<CreatureTemplate>("type"),
+            i => i.MatchLdsfld<CreatureTemplate.Type>("Slugcat"),
+            i => i.MatchCallOrCallvirt(out _));
 
         cursor.MoveAfterLabels();
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.Emit(OpCodes.Ldloc, loc);
-        cursor.EmitDelegate((ShelterDoor self, int i) => self.room.abstractRoom.creatures[i].creatureTemplate.type != BeeEnums.CreatureType.Bup);
-        cursor.Emit(OpCodes.And);
+
+        cursor.Emit(Mono.Cecil.Cil.OpCodes.Ldarg_0);
+        cursor.Emit(Mono.Cecil.Cil.OpCodes.Ldloc, loc);
+        cursor.EmitDelegate<Func<ShelterDoor, int, bool>>((ShelterDoor self, int i) => {
+            return self.room.abstractRoom.creatures[i].creatureTemplate.type != BeeEnums.CreatureType.Bup;
+        });
+        cursor.Emit(Mono.Cecil.Cil.OpCodes.And);
     }
 
     private static void SaveState_SessionEnded(On.SaveState.orig_SessionEnded orig, SaveState self, RainWorldGame game, bool survived, bool newMalnourished)
@@ -302,26 +304,6 @@ public static class BupHook
     private static bool OracleBehavior_CheckSlugpupsInRoom(On.OracleBehavior.orig_CheckSlugpupsInRoom orig, OracleBehavior self)
     {
         return orig(self) || self.oracle.room.abstractRoom.creatures.Any(creature => creature.creatureTemplate.type == BeeEnums.CreatureType.Bup && creature.state.alive);
-    }
-
-    private static void GhostCreatureSedater_Update(ILContext il)
-    {
-        var cursor = new ILCursor(il);
-
-        var loc = -1;
-        cursor.GotoNext(MoveType.After,
-            i => i.MatchLdloc(out loc),
-            i => i.MatchCallOrCallvirt(out _),
-            i => i.MatchLdfld<AbstractCreature>(nameof(AbstractCreature.creatureTemplate)),
-            i => i.MatchLdfld<CreatureTemplate>(nameof(CreatureTemplate.type)),
-            i => i.MatchLdsfld<MoreSlugcatsEnums.CreatureTemplateType>(nameof(MoreSlugcatsEnums.CreatureTemplateType.SlugNPC)),
-            i => i.MatchCallOrCallvirt(typeof(ExtEnum<CreatureTemplate.Type>).GetMethod("op_Inequality")));
-
-        cursor.MoveAfterLabels();
-        cursor.Emit(OpCodes.Ldarg_0);
-        cursor.Emit(OpCodes.Ldloc, loc);
-        cursor.EmitDelegate((GhostCreatureSedater self, int i) => self.room.abstractRoom.creatures[i].creatureTemplate.type != BeeEnums.CreatureType.Bup);
-        cursor.Emit(OpCodes.And);
     }
 
     private static void VoidSeaScene_Update(ILContext il)
